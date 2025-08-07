@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help Shape The Public Square - FCT Civic Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --purple-color: #8b5cf6;
+            --pink-color: #ec4899;
+            --gradient-primary: linear-gradient(135deg, var(--primary-color), var(--purple-color));
+            --gradient-success: linear-gradient(135deg, var(--success-color), #14b8a6);
+            --gradient-warning: linear-gradient(135deg, var(--warning-color), #f97316);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .questionnaire-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            margin: 20px auto;
+            max-width: 800px;
+            overflow: hidden;
+        }
+
+        .progress-container {
+            background: var(--gradient-primary);
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+        }
+
+        .progress-bar-custom {
+            height: 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            margin: 1rem 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #fff, #f8f9fa);
+            border-radius: 10px;
+            transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .step-content {
+            padding: 2.5rem;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .step-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .step-number {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            line-height: 60px;
+            margin-bottom: 1rem;
+        }
+
+        .form-control, .form-select, .form-check-input {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid #6b7280;
+            border-radius: 12px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .card-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .card-option:hover {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .card-option.selected {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.1);
+        }
+
+        .rating-scale {
+            display: flex;
+            justify-content: space-between;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .rating-item {
+            flex: 1;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .rating-input {
+            width: 30px;
+            height: 30px;
+            margin: 0 auto;
+        }
+
+        .checkbox-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .checkbox-card:hover {
+            border-color: var(--primary-color);
+            background: rgba(37, 99, 235, 0.02);
+        }
+
+        .checkbox-card.checked {
+            border-color: var(--success-color);
+            background: rgba(16, 185, 129, 0.05);
+        }
+
+        .welcome-hero {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .welcome-hero h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .thank-you-section {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: var(--gradient-success);
+            color: white;
+        }
+
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .floating-icon {
+            position: absolute;
+            font-size: 2rem;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+
+        .slide-enter {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .incentive-banner {
+            background: var(--gradient-warning);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .questionnaire-container {
+                margin: 10px;
+                border-radius: 16px;
+            }
+
+            .step-content {
+                padding: 1.5rem;
+            }
+
+            .welcome-hero h1 {
+                font-size: 2rem;
+            }
+
+            .rating-scale {
+                justify-content: center;
+            }
+
+            .rating-item {
+                min-width: 35px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+</head>
+
+<body x-data="questionnaire()" x-init="init()">
+    <!-- Incentive Banner -->
+    <div class="incentive-banner">
+        <i class="fas fa-gift me-2"></i>
+        <strong>WIN ₦50,000!</strong> Complete this survey and get a chance to win airtime - 50 winners of ₦1,000 each!
+    </div>
+
+    <div class="container-fluid py-3">
+        <div class="questionnaire-container">
+            <!-- Floating Background Elements -->
+            <div class="floating-elements">
+                <div class="floating-icon" style="top: 10%; left: 5%;"><i class="fas fa-city"></i></div>
+                <div class="floating-icon" style="top: 20%; right: 10%;"><i class="fas fa-users"></i></div>
+                <div class="floating-icon" style="top: 60%; left: 10%;"><i class="fas fa-lightbulb"></i></div>
+                <div class="floating-icon" style="top: 70%; right: 5%;"><i class="fas fa-comments"></i></div>
+            </div>
+
+            <!-- Progress Header -->
+            <div class="progress-container" x-show="currentStep > 0 && currentStep < totalSteps" x-transition>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-bold">The Public Square Survey</span>
+                    <span x-text="`Step ${currentStep} of ${totalSteps - 1}`"></span>
+                </div>
+                <div class="progress-bar-custom">
+                    <div class="progress-fill" :style="`width: ${(currentStep / (totalSteps - 1)) * 100}%`"></div>
+                </div>
+                <small x-text="`${Math.round((currentStep / (totalSteps - 1)) * 100)}% Complete`"></small>
+            </div>
+
+            <!-- Step 0: Welcome -->
+            <div x-show="currentStep === 0" x-transition class="fade-in">
+                <div class="welcome-hero">
+                    <div class="step-number pulse">🏛️</div>
+                    <h1>Help Us Build Something Amazing!</h1>
+                    <p class="lead mb-4">We're creating a platform to connect FCT residents with government agencies. Your voice matters - help us make it perfect for you.</p>
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-clock fa-2x mb-2"></i>
+                            <p><strong>5-7 minutes</strong><br>Quick & Easy</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-shield-alt fa-2x mb-2"></i>
+                            <p><strong>100% Anonymous</strong><br>Your Privacy Matters</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-gift fa-2x mb-2"></i>
+                            <p><strong>Win ₦1,000</strong><br>Airtime Giveaway</p>
+                        </div>
+                    </div>
+                    <button @click="nextStep()" class="btn btn-light btn-lg px-5">
+                        <i class="fas fa-rocket me-2"></i>Let's Get Started!
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 1: Screening & Demographics -->
+            <div x-show="currentStep === 1" x-transition class="step-content slide-enter">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <h2>Tell Us About Yourself</h2>
+                    <p class="text-muted">First, let's make sure you're part of our FCT community</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Do you live, work, or study in FCT (Abuja)?</label>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card-option" :class="{ 'selected': responses.q1 === 'live' }" @click="responses.q1 = 'live'">
+                                <i class="fas fa-home text-primary me-2"></i>
+                                <strong>Yes, I live in FCT</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-option" :class="{ 'selected': responses.q1 === 'work' }" @click="responses.q1 = 'work'">
+                                <i class="fas fa-briefcase text-success me-2"></i>
+                                <strong>Yes, I work in FCT</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-option" :class="{ 'selected': responses.q1 === 'study' }" @click="responses.q1 = 'study'">
+                                <i class="fas fa-graduation-cap text-warning me-2"></i>
+                                <strong>Yes, I study in FCT</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card-option" :class="{ 'selected': responses.q1 === 'no' }" @click="responses.q1 = 'no'">
+                                <i class="fas fa-times text-danger me-2"></i>
+                                <strong>No, I don't</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div x-show="responses.q1 && responses.q1 !== 'no'" x-transition class="mb-4">
+                    <label class="form-label fw-bold">Which FCT area is your primary location?</label>
+                    <select class="form-select" x-model="responses.q2">
+                        <option value="">Select your area</option>
+                        <option value="municipal">Abuja Municipal (CBD, Garki, Wuse, Maitama, Asokoro)</option>
+                        <option value="bwari">Bwari (Kubwa, Bwari, Dutse, Byazhin)</option>
+                        <option value="gwagwalada">Gwagwalada (University area)</option>
+                        <option value="kuje">Kuje</option>
+                        <option value="abaji">Abaji</option>
+                        <option value="kwali">Kwali</option>
+                        <option value="other">Other FCT area</option>
+                    </select>
+                </div>
+
+                <div x-show="responses.q1 === 'no'" x-transition class="text-center p-4">
+                    <i class="fas fa-heart-broken fa-3x text-muted mb-3"></i>
+                    <h4>Thanks for your interest!</h4>
+                    <p class="text-muted">This survey is specifically for FCT residents, workers, and students. We appreciate you taking the time!</p>
+                </div>
+
+                <div class="row g-3" x-show="responses.q1 && responses.q1 !== 'no'">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Age Range</label>
+                        <select class="form-select" x-model="responses.q3">
+                            <option value="">Select age range</option>
+                            <option value="18-24">18-24 years</option>
+                            <option value="25-34">25-34 years</option>
+                            <option value="35-44">35-44 years</option>
+                            <option value="45-54">45-54 years</option>
+                            <option value="55-64">55-64 years</option>
+                            <option value="65+">65+ years</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold">Current Status</label>
+                        <select class="form-select" x-model="responses.q4">
+                            <option value="">Select status</option>
+                            <option value="student">Student (University/Polytechnic)</option>
+                            <option value="civil_servant">Civil servant (Federal/FCT)</option>
+                            <option value="private_sector">Private sector employee</option>
+                            <option value="self_employed">Self-employed/Business owner</option>
+                            <option value="unemployed">Unemployed/Job seeking</option>
+                            <option value="retired">Retired</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div x-show="responses.q1 && responses.q1 !== 'no' && responses.q2" x-transition class="mt-4">
+                    <label class="form-label fw-bold">Education Level</label>
+                    <select class="form-select" x-model="responses.q5">
+                        <option value="">Select education level</option>
+                        <option value="primary">Primary school</option>
+                        <option value="secondary">Secondary school (SSCE/WAEC)</option>
+                        <option value="ond_nce">OND/NCE</option>
+                        <option value="hnd_bachelor">HND/Bachelor's degree</option>
+                        <option value="masters">Master's degree</option>
+                        <option value="phd">PhD/Professional qualification</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4" x-show="responses.q1 && responses.q1 !== 'no'">
+                    <button @click="prevStep()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button @click="nextStep()" class="btn btn-primary" :disabled="!canProceedFromStep1()">
+                        Continue<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 2: Civic Problems & Current Experience -->
+            <div x-show="currentStep === 2" x-transition class="step-content slide-enter">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <h2>Your Civic Experience</h2>
+                    <p class="text-muted">Let's understand the challenges you face in FCT</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">In the past 12 months, which civic issues have you personally experienced? <small class="text-muted">(Select all that apply)</small></label>
+                    <div class="row g-2">
+                        <template x-for="issue in civicIssues" :key="issue.value">
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q6.includes(issue.value) }" @click="toggleArrayValue('q6', issue.value)">
+                                    <i :class="issue.icon" class="me-2"></i>
+                                    <span x-text="issue.label"></span>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q6.includes(issue.value)"></i>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div x-show="responses.q6.length > 0" x-transition class="mb-4">
+                    <label class="form-label fw-bold">Thinking about your MOST SERIOUS issue, how would you rate its impact on your daily life?</label>
+                    <div class="rating-scale">
+                        <template x-for="(label, index) in impactLevels" :key="index">
+                            <div class="rating-item">
+                                <input type="radio" :value="index + 1" x-model="responses.q7" class="rating-input" :id="'impact-' + (index + 1)">
+                                <label :for="'impact-' + (index + 1)" class="small d-block mt-1" x-text="label"></label>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div x-show="responses.q7" x-transition class="mb-4">
+                    <label class="form-label fw-bold">Did you try to report this serious issue or seek help?</label>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q8 === 'yes' }" @click="responses.q8 = 'yes'">
+                                <i class="fas fa-thumbs-up text-success me-2"></i>
+                                <strong>Yes, I tried</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q8 === 'no_bother' }" @click="responses.q8 = 'no_bother'">
+                                <i class="fas fa-meh text-warning me-2"></i>
+                                <strong>No, didn't bother</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q8 === 'no_know' }" @click="responses.q8 = 'no_know'">
+                                <i class="fas fa-question-circle text-danger me-2"></i>
+                                <strong>Didn't know who</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div x-show="responses.q8 === 'yes'" x-transition class="mb-4">
+                    <label class="form-label fw-bold">Which of these did you try? <small class="text-muted">(Select all)</small></label>
+                    <div class="row g-2">
+                        <template x-for="method in reportingMethods" :key="method.value">
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q9.includes(method.value) }" @click="toggleArrayValue('q9', method.value)">
+                                    <i :class="method.icon" class="me-2"></i>
+                                    <span x-text="method.label"></span>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q9.includes(method.value)"></i>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div x-show="responses.q9.length > 0" x-transition class="mb-4">
+                    <label class="form-label fw-bold">What was the outcome?</label>
+                    <div class="row g-3">
+                        <template x-for="outcome in outcomes" :key="outcome.value">
+                            <div class="col-md-6">
+                                <div class="card-option" :class="{ 'selected': responses.q10 === outcome.value }" @click="responses.q10 = outcome.value">
+                                    <i :class="outcome.icon" class="me-2"></i>
+                                    <span x-text="outcome.label"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button @click="prevStep()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button @click="nextStep()" class="btn btn-primary">
+                        Continue<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 3: Platform Concept Validation -->
+            <div x-show="currentStep === 3" x-transition class="step-content slide-enter">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <h2>The Solution We're Building</h2>
+                    <p class="text-muted">Imagine a platform that actually works for you</p>
+                </div>
+
+                <div class="alert alert-info mb-4">
+                    <h5><i class="fas fa-lightbulb me-2"></i>Picture This:</h5>
+                    <ul class="mb-0">
+                        <li>Report civic issues with photos and location</li>
+                        <li>Issues automatically sent to the correct government agency</li>
+                        <li>Track status: received → in progress → resolved</li>
+                        <li>See other issues in your area</li>
+                        <li>Get updates when agencies respond</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">How interested would you be in using such a platform?</label>
+                    <div class="row g-3">
+                        <template x-for="level in interestLevels" :key="level.value">
+                            <div class="col-md-6">
+                                <div class="card-option" :class="{ 'selected': responses.q13 === level.value }" @click="responses.q13 = level.value">
+                                    <i :class="level.icon" class="me-2"></i>
+                                    <strong x-text="level.label"></strong>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div x-show="responses.q13 && responses.q13 !== 'not_at_all'" x-transition class="mb-4">
+                    <label class="form-label fw-bold">What would be your PRIMARY reason for using this platform?</label>
+                    <select class="form-select" x-model="responses.q14">
+                        <option value="">Select primary reason</option>
+                        <option value="direct_reach">Finally have a direct way to reach government</option>
+                        <option value="track_progress">Track progress on my complaints</option>
+                        <option value="see_area_issues">See what issues others in my area face</option>
+                        <option value="hold_accountable">Hold government accountable publicly</option>
+                        <option value="support_others">Support other people's similar issues</option>
+                        <option value="faster_resolution">Get faster resolution of problems</option>
+                        <option value="know_agency">Know which agency handles what</option>
+                    </select>
+                </div>
+
+                <div x-show="responses.q13" x-transition class="mb-4">
+                    <label class="form-label fw-bold">Rate your satisfaction with current government response to complaints (1-10)</label>
+                    <div class="rating-scale">
+                        <template x-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i">
+                            <div class="rating-item">
+                                <input type="radio" :value="i" x-model="responses.q11" class="rating-input" :id="'satisfaction-' + i">
+                                <label :for="'satisfaction-' + i" class="small d-block mt-1" x-text="i"></label>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted mt-1">
+                        <span>Extremely dissatisfied</span>
+                        <span>Extremely satisfied</span>
+                    </div>
+                </div>
+
+                <div x-show="responses.q13" x-transition class="mb-4">
+                    <label class="form-label fw-bold">What concerns would you have about using this platform? <small class="text-muted">(Select all that apply)</small></label>
+                    <div class="row g-2">
+                        <template x-for="concern in concerns" :key="concern.value">
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q17.includes(concern.value) }" @click="toggleArrayValue('q17', concern.value)">
+                                    <i :class="concern.icon" class="me-2"></i>
+                                    <span x-text="concern.label"></span>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q17.includes(concern.value)"></i>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button @click="prevStep()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button @click="nextStep()" class="btn btn-primary">
+                        Continue<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 4: Usage Behavior & Willingness to Pay -->
+            <div x-show="currentStep === 4" x-transition class="step-content slide-enter">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <h2>Your Usage Preferences</h2>
+                    <p class="text-muted">Help us understand how you'd want to use this platform</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">If this platform launched tomorrow, how often would you use it?</label>
+                    <div class="row g-3">
+                        <template x-for="frequency in usageFrequency" :key="frequency.value">
+                            <div class="col-md-6">
+                                <div class="card-option" :class="{ 'selected': responses.q18 === frequency.value }" @click="responses.q18 = frequency.value">
+                                    <i :class="frequency.icon" class="me-2"></i>
+                                    <span x-text="frequency.label"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Would you prefer a mobile app or website?</label>
+                    <div class="row g-3">
+                        <template x-for="platform in platformPreferences" :key="platform.value">
+                            <div class="col-md-6">
+                                <div class="card-option" :class="{ 'selected': responses.q19 === platform.value }" @click="responses.q19 = platform.value">
+                                    <i :class="platform.icon" class="me-2"></i>
+                                    <span x-text="platform.label"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <div class="alert alert-warning">
+                        <h6><i class="fas fa-star me-2"></i>Premium Features (₦500/month):</h6>
+                        <ul class="mb-0 small">
+                            <li>Faster processing of urgent issues</li>
+                            <li>Direct phone support</li>
+                            <li>Detailed progress tracking</li>
+                            <li>Priority response from agencies</li>
+                            <li>Advanced reporting tools</li>
+                        </ul>
+                    </div>
+                    <label class="form-label fw-bold">Would you pay ₦500 per month for these premium features?</label>
+                    <div class="row g-3">
+                        <template x-for="willingness in paymentWillingness" :key="willingness.value">
+                            <div class="col-md-6">
+                                <div class="card-option" :class="{ 'selected': responses.q20 === willingness.value }" @click="responses.q20 = willingness.value">
+                                    <i :class="willingness.icon" class="me-2"></i>
+                                    <span x-text="willingness.label"></span>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div x-show="responses.q20 === 'probably_no' || responses.q20 === 'definitely_no'" x-transition class="mb-4">
+                    <label class="form-label fw-bold">What would be a fair price for premium features?</label>
+                    <select class="form-select" x-model="responses.q21">
+                        <option value="">Select fair price</option>
+                        <option value="200">₦200 per month</option>
+                        <option value="300">₦300 per month</option>
+                        <option value="1000_year">₦1,000 per year (₦83/month)</option>
+                        <option value="2000_year">₦2,000 per year (₦167/month)</option>
+                        <option value="never">Would never pay for any premium features</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button @click="prevStep()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button @click="nextStep()" class="btn btn-primary">
+                        Continue<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 5: Social Validation & Network Effects -->
+            <div x-show="currentStep === 5" x-transition class="step-content slide-enter">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <h2>Community & Sharing</h2>
+                    <p class="text-muted">How likely are you to recommend and share this platform?</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">If you found this platform useful, how likely would you be to recommend it to others? (1-10)</label>
+                    <div class="rating-scale">
+                        <template x-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i">
+                            <div class="rating-item">
+                                <input type="radio" :value="i" x-model="responses.q23" class="rating-input" :id="'recommend-' + i">
+                                <label :for="'recommend-' + i" class="small d-block mt-1" x-text="i"></label>
+                            </div>
+                        </template>
+                    </div>
+                    <div class="d-flex justify-content-between small text-muted mt-1">
+                        <span>Very unlikely</span>
+                        <span>Very likely</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Who would you most likely recommend it to? <small class="text-muted">(Select all)</small></label>
+                    <div class="row g-2">
+                        <template x-for="audience in recommendAudience" :key="audience.value">
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q24.includes(audience.value) }" @click="toggleArrayValue('q24', audience.value)">
+                                    <i :class="audience.icon" class="me-2"></i>
+                                    <span x-text="audience.label"></span>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q24.includes(audience.value)"></i>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Would you be interested in becoming a "Community Ambassador" to help introduce this platform in your area?</label>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q25 === 'very_interested' }" @click="responses.q25 = 'very_interested'">
+                                <i class="fas fa-star text-warning me-2"></i>
+                                <strong>Yes, very interested</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q25 === 'maybe' }" @click="responses.q25 = 'maybe'">
+                                <i class="fas fa-question-circle text-info me-2"></i>
+                                <strong>Maybe, depends</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q25 === 'not_interested' }" @click="responses.q25 = 'not_interested'">
+                                <i class="fas fa-times text-muted me-2"></i>
+                                <strong>No, not interested</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">How would you prefer to hear about updates? <small class="text-muted">(Select all)</small></label>
+                    <div class="row g-2">
+                        <template x-for="method in updateMethods" :key="method.value">
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q26.includes(method.value) }" @click="toggleArrayValue('q26', method.value)">
+                                    <i :class="method.icon" class="me-2"></i>
+                                    <span x-text="method.label"></span>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q26.includes(method.value)"></i>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button @click="prevStep()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button @click="nextStep()" class="btn btn-primary">
+                        Continue<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 6: Open-ended Feedback -->
+            <div x-show="currentStep === 6" x-transition class="step-content slide-enter">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <h2>Your Thoughts Matter</h2>
+                    <p class="text-muted">Help us make this platform perfect for you</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">What would make you MOST excited about using this platform?</label>
+                    <textarea class="form-control" x-model="responses.q27" rows="3" maxlength="200" placeholder="Share what excites you most..."></textarea>
+                    <small class="text-muted float-end" x-text="`${responses.q27.length}/200 characters`"></small>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">What would be your BIGGEST worry about using this platform?</label>
+                    <textarea class="form-control" x-model="responses.q28" rows="3" maxlength="200" placeholder="What concerns you?"></textarea>
+                    <small class="text-muted float-end" x-text="`${responses.q28.length}/200 characters`"></small>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">If you could add ONE feature to make this platform perfect, what would it be?</label>
+                    <textarea class="form-control" x-model="responses.q29" rows="2" maxlength="150" placeholder="Your perfect feature idea..."></textarea>
+                    <small class="text-muted float-end" x-text="`${responses.q29.length}/150 characters`"></small>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Any other comments, suggestions, or questions?</label>
+                    <textarea class="form-control" x-model="responses.q30" rows="4" maxlength="300" placeholder="Anything else you'd like to share..."></textarea>
+                    <small class="text-muted float-end" x-text="`${responses.q30.length}/300 characters`"></small>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button @click="prevStep()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button @click="nextStep()" class="btn btn-primary">
+                        Continue<i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 7: Contact & Follow-up -->
+            <div x-show="currentStep === 7" x-transition class="step-content slide-enter">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <h2>Stay Connected</h2>
+                    <p class="text-muted">Get launch updates and participate in our community</p>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label fw-bold">Would you like to be notified when this platform launches?</label>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q31 === 'definitely' }" @click="responses.q31 = 'definitely'">
+                                <i class="fas fa-thumbs-up text-success me-2"></i>
+                                <strong>Yes, definitely</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q31 === 'maybe' }" @click="responses.q31 = 'maybe'">
+                                <i class="fas fa-question-circle text-warning me-2"></i>
+                                <strong>Maybe, keep me informed</strong>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card-option" :class="{ 'selected': responses.q31 === 'no' }" @click="responses.q31 = 'no'">
+                                <i class="fas fa-times text-muted me-2"></i>
+                                <strong>No, not interested</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div x-show="responses.q31 === 'definitely' || responses.q31 === 'maybe'" x-transition>
+                    <div class="alert alert-info mb-4">
+                        <h6><i class="fas fa-gift me-2"></i>Bonus Opportunities!</h6>
+                        <p class="mb-0">Join our research activities and earn money while helping us build something amazing!</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Would you be interested in participating in:</label>
+                        <div class="row g-2">
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q33.includes('beta_testing') }" @click="toggleArrayValue('q33', 'beta_testing')">
+                                    <i class="fas fa-flask text-info me-2"></i>
+                                    <strong>Beta testing before launch</strong>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q33.includes('beta_testing')"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q33.includes('focus_group') }" @click="toggleArrayValue('q33', 'focus_group')">
+                                    <i class="fas fa-users text-success me-2"></i>
+                                    <strong>Focus group (₦5,000 compensation)</strong>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q33.includes('focus_group')"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q33.includes('interview') }" @click="toggleArrayValue('q33', 'interview')">
+                                    <i class="fas fa-microphone text-warning me-2"></i>
+                                    <strong>One-on-one interview (₦10,000 compensation)</strong>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q33.includes('interview')"></i>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="checkbox-card" :class="{ 'checked': responses.q33.includes('none') }" @click="responses.q33 = responses.q33.includes('none') ? [] : ['none']">
+                                    <i class="fas fa-times text-muted me-2"></i>
+                                    <strong>None of the above</strong>
+                                    <i class="fas fa-check-circle float-end text-success" x-show="responses.q33.includes('none')"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div x-show="responses.q33.length > 0 && !responses.q33.includes('none')" x-transition>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" x-model="responses.phone" placeholder="08012345678" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Email Address <span class="text-danger">*</span></label>
+                                <input type="email" class="form-control" x-model="responses.email" placeholder="you@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Preferred contact method</label>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <div class="card-option" :class="{ 'selected': responses.contact_method === 'phone' }" @click="responses.contact_method = 'phone'">
+                                        <i class="fas fa-phone text-primary me-2"></i>
+                                        <span>Phone</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card-option" :class="{ 'selected': responses.contact_method === 'email' }" @click="responses.contact_method = 'email'">
+                                        <i class="fas fa-envelope text-success me-2"></i>
+                                        <span>Email</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="card-option" :class="{ 'selected': responses.contact_method === 'whatsapp' }" @click="responses.contact_method = 'whatsapp'">
+                                        <i class="fab fa-whatsapp text-success me-2"></i>
+                                        <span>WhatsApp</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button @click="prevStep()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back
+                    </button>
+                    <button @click="submitSurvey()" class="btn btn-primary" :disabled="submitting">
+                        <span x-show="!submitting">
+                            <i class="fas fa-paper-plane me-2"></i>Submit Survey
+                        </span>
+                        <span x-show="submitting">
+                            <i class="fas fa-spinner fa-spin me-2"></i>Submitting...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Step 8: Thank You -->
+            <div x-show="currentStep === 8" x-transition class="fade-in">
+                <div class="thank-you-section">
+                    <div class="step-number pulse">🎉</div>
+                    <h1>Thank You!</h1>
+                    <p class="lead mb-4">Your responses are incredibly valuable to us. You've just helped shape the future of civic engagement in FCT!</p>
+
+                    <div class="row text-center mb-4">
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-gift fa-3x mb-2"></i>
+                            <h5>Giveaway Entry</h5>
+                            <p>You're now entered to win ₦1,000 airtime. Winners announced in 2 weeks!</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-bell fa-3x mb-2"></i>
+                            <h5>Stay Updated</h5>
+                            <p>We'll keep you posted on our progress and launch updates</p>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <i class="fas fa-rocket fa-3x mb-2"></i>
+                            <h5>Early Access</h5>
+                            <p>As a survey participant, you'll get early access to The Public Square</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning mb-4">
+                        <h5><i class="fas fa-share-alt me-2"></i>Help Us Reach More People!</h5>
+                        <p class="mb-2">Know other FCT residents who face similar issues? Share this survey with them!</p>
+                        <div class="d-flex justify-content-center gap-2 flex-wrap">
+                            <button class="btn btn-light btn-sm" @click="shareOnSocial('whatsapp')">
+                                <i class="fab fa-whatsapp me-1"></i>WhatsApp
+                            </button>
+                            <button class="btn btn-light btn-sm" @click="shareOnSocial('twitter')">
+                                <i class="fab fa-twitter me-1"></i>Twitter
+                            </button>
+                            <button class="btn btn-light btn-sm" @click="shareOnSocial('facebook')">
+                                <i class="fab fa-facebook me-1"></i>Facebook
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="mb-0"><strong>Questions?</strong> Email us at <a href="mailto:hello@thepublicsquare.ng" class="text-white">hello@thepublicsquare.ng</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function questionnaire() {
+            return {
+                currentStep: 0,
+                totalSteps: 9,
+                submitting: false,
+                startTime: null,
+
+                responses: {
+                    // Demographics
+                    q1: '', q2: '', q3: '', q4: '', q5: '',
+                    // Civic Issues
+                    q6: [], q7: '', q8: '', q9: [], q10: '', q11: '',
+                    // Platform Concept
+                    q13: '', q14: '', q17: [],
+                    // Usage & Payment
+                    q18: '', q19: '', q20: '', q21: '',
+                    // Social
+                    q23: '', q24: [], q25: '', q26: [],
+                    // Feedback
+                    q27: '', q28: '', q29: '', q30: '',
+                    // Contact
+                    q31: '', q33: [], phone: '', email: '', contact_method: ''
+                },
+
+                // Data arrays for options
+                civicIssues: [
+                    { value: 'water', label: 'Water shortage/quality problems', icon: 'fas fa-tint text-primary' },
+                    { value: 'roads', label: 'Poor road conditions/potholes', icon: 'fas fa-road text-warning' },
+                    { value: 'electricity', label: 'Electricity outages/power issues', icon: 'fas fa-bolt text-danger' },
+                    { value: 'waste', label: 'Waste management/sanitation', icon: 'fas fa-trash text-success' },
+                    { value: 'lighting', label: 'Street lighting not working', icon: 'fas fa-lightbulb text-warning' },
+                    { value: 'security', label: 'Security/safety concerns', icon: 'fas fa-shield-alt text-danger' },
+                    { value: 'healthcare', label: 'Healthcare facility issues', icon: 'fas fa-hospital text-info' },
+                    { value: 'none', label: 'None of these issues', icon: 'fas fa-check text-muted' }
+                ],
+
+                impactLevels: [
+                    'Extremely disruptive (daily)',
+                    'Very disruptive (weekly)',
+                    'Moderately disruptive (monthly)',
+                    'Slightly disruptive (occasional)',
+                    'Not really disruptive'
+                ],
+
+                reportingMethods: [
+                    { value: 'social_media', label: 'Posted on social media', icon: 'fas fa-share-alt text-info' },
+                    { value: 'called_office', label: 'Called government office', icon: 'fas fa-phone text-primary' },
+                    { value: 'visited_office', label: 'Visited government office', icon: 'fas fa-building text-secondary' },
+                    { value: 'councillor', label: 'Contacted ward councillor', icon: 'fas fa-user-tie text-success' },
+                    { value: 'community_leader', label: 'Reported to community leader', icon: 'fas fa-users text-warning' },
+                    { value: 'complaint_platform', label: 'Used government complaint platform', icon: 'fas fa-laptop text-info' },
+                    { value: 'media', label: 'Contacted media/journalist', icon: 'fas fa-newspaper text-danger' }
+                ],
+
+                outcomes: [
+                    { value: 'completely_resolved', label: 'Problem completely resolved', icon: 'fas fa-check-circle text-success' },
+                    { value: 'partially_resolved', label: 'Problem partially resolved', icon: 'fas fa-check text-warning' },
+                    { value: 'acknowledged', label: 'Acknowledged but no action', icon: 'fas fa-eye text-info' },
+                    { value: 'no_response', label: 'Never received response', icon: 'fas fa-times text-danger' },
+                    { value: 'runaround', label: 'Got runaround between offices', icon: 'fas fa-sync text-muted' }
+                ],
+
+                interestLevels: [
+                    { value: 'extremely', label: 'Extremely interested', icon: 'fas fa-star text-warning' },
+                    { value: 'very', label: 'Very interested', icon: 'fas fa-thumbs-up text-success' },
+                    { value: 'somewhat', label: 'Somewhat interested', icon: 'fas fa-question-circle text-info' },
+                    { value: 'not_very', label: 'Not very interested', icon: 'fas fa-meh text-warning' },
+                    { value: 'not_at_all', label: 'Not at all interested', icon: 'fas fa-times text-danger' }
+                ],
+
+                concerns: [
+                    { value: 'retaliation', label: 'Government might retaliate', icon: 'fas fa-exclamation-triangle text-danger' },
+                    { value: 'security', label: 'Personal info not secure', icon: 'fas fa-lock text-warning' },
+                    { value: 'no_change', label: 'Nothing will change anyway', icon: 'fas fa-meh text-muted' },
+                    { value: 'political', label: 'Used for political purposes', icon: 'fas fa-flag text-info' },
+                    { value: 'trust_tech', label: 'Don\'t trust technology', icon: 'fas fa-robot text-secondary' },
+                    { value: 'negative_attention', label: 'Negative attention to my area', icon: 'fas fa-eye text-warning' },
+                    { value: 'annoy_officials', label: 'Officials might get annoyed', icon: 'fas fa-angry text-danger' },
+                    { value: 'no_concerns', label: 'No major concerns', icon: 'fas fa-smile text-success' }
+                ],
+
+                usageFrequency: [
+                    { value: 'multiple_weekly', label: 'Multiple times per week', icon: 'fas fa-calendar-day text-danger' },
+                    { value: 'weekly', label: 'About once per week', icon: 'fas fa-calendar-week text-warning' },
+                    { value: 'few_monthly', label: 'A few times per month', icon: 'fas fa-calendar text-success' },
+                    { value: 'monthly', label: 'About once per month', icon: 'fas fa-calendar-alt text-info' },
+                    { value: 'serious_only', label: 'Only for serious issues', icon: 'fas fa-exclamation text-primary' },
+                    { value: 'never', label: 'Probably never', icon: 'fas fa-times text-muted' }
+                ],
+
+                platformPreferences: [
+                    { value: 'strongly_app', label: 'Strongly prefer mobile app', icon: 'fas fa-mobile-alt text-primary' },
+                    { value: 'slightly_app', label: 'Slightly prefer mobile app', icon: 'fas fa-mobile text-info' },
+                    { value: 'no_preference', label: 'No preference', icon: 'fas fa-balance-scale text-muted' },
+                    { value: 'slightly_web', label: 'Slightly prefer website', icon: 'fas fa-globe text-info' },
+                    { value: 'strongly_web', label: 'Strongly prefer website', icon: 'fas fa-desktop text-primary' },
+                    { value: 'both', label: 'Would use both', icon: 'fas fa-tools text-success' }
+                ],
+
+                paymentWillingness: [
+                    { value: 'definitely_yes', label: 'Definitely yes', icon: 'fas fa-thumbs-up text-success' },
+                    { value: 'probably_yes', label: 'Probably yes', icon: 'fas fa-check text-info' },
+                    { value: 'maybe', label: 'Maybe/unsure', icon: 'fas fa-question text-warning' },
+                    { value: 'probably_no', label: 'Probably no', icon: 'fas fa-times text-warning' },
+                    { value: 'definitely_no', label: 'Definitely no', icon: 'fas fa-ban text-danger' }
+                ],
+
+                recommendAudience: [
+                    { value: 'family', label: 'Family members', icon: 'fas fa-home text-success' },
+                    { value: 'friends', label: 'Friends and neighbors', icon: 'fas fa-user-friends text-primary' },
+                    { value: 'colleagues', label: 'Colleagues at work', icon: 'fas fa-briefcase text-info' },
+                    { value: 'students', label: 'Fellow students', icon: 'fas fa-graduation-cap text-warning' },
+                    { value: 'social_media', label: 'Social media followers', icon: 'fas fa-share-alt text-danger' },
+                    { value: 'community', label: 'Community group members', icon: 'fas fa-users text-secondary' },
+                    { value: 'religious', label: 'Religious congregation', icon: 'fas fa-pray text-purple' },
+                    { value: 'professional', label: 'Professional association', icon: 'fas fa-handshake text-success' },
+                    { value: 'none', label: 'Would not recommend', icon: 'fas fa-user-slash text-muted' }
+                ],
+
+                updateMethods: [
+                    { value: 'email', label: 'Email newsletters', icon: 'fas fa-envelope text-primary' },
+                    { value: 'sms', label: 'SMS updates', icon: 'fas fa-sms text-success' },
+                    { value: 'whatsapp', label: 'WhatsApp messages', icon: 'fab fa-whatsapp text-success' },
+                    { value: 'push', label: 'Push notifications', icon: 'fas fa-bell text-warning' },
+                    { value: 'social', label: 'Social media posts', icon: 'fas fa-share-alt text-info' },
+                    { value: 'no_updates', label: 'Don\'t want updates', icon: 'fas fa-times text-muted' }
+                ],
+
+                init() {
+                    // Track survey start time
+                    this.startTime = Date.now();
+                    console.log('Survey started');
+                },
+
+                nextStep() {
+                    if (this.currentStep < this.totalSteps - 1) {
+                        this.currentStep++;
+                    }
+                },
+
+                prevStep() {
+                    if (this.currentStep > 0) {
+                        this.currentStep--;
+                    }
+                },
+
+                canProceedFromStep1() {
+                    return this.responses.q1 &&
+                           (this.responses.q1 === 'no' ||
+                            (this.responses.q2 && this.responses.q3 && this.responses.q4 && this.responses.q5));
+                },
+
+                toggleArrayValue(field, value) {
+                    const array = this.responses[field];
+                    const index = array.indexOf(value);
+
+                    // Special handling for mutually exclusive options
+                    if (field === 'q6' && value === 'none') {
+                        this.responses[field] = array.includes('none') ? [] : ['none'];
+                    } else if (field === 'q6' && array.includes('none')) {
+                        this.responses[field] = [value];
+                    } else if (field === 'q33' && value === 'none') {
+                        this.responses[field] = array.includes('none') ? [] : ['none'];
+                    } else if (field === 'q33' && array.includes('none')) {
+                        this.responses[field] = [value];
+                    } else {
+                        if (index > -1) {
+                            array.splice(index, 1);
+                        } else {
+                            array.push(value);
+                        }
+                    }
+                },
+
+                async submitSurvey() {
+                    this.submitting = true;
+
+                    const submissionData = {
+                        responses: this.responses,
+                        time_spent: Math.floor((Date.now() - this.startTime) / 1000)
+                    };
+
+                    try {
+                        const response = await fetch('/api/questionnaire/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(submissionData)
+                        });
+
+                        const result = await response.json();
+
+                        if (response.ok) {
+                            console.log('Survey submitted successfully:', result);
+                            this.submitting = false;
+                            this.currentStep = this.totalSteps - 1;
+                        } else {
+                            throw new Error(result.errors || 'Submission failed');
+                        }
+                    } catch (error) {
+                        console.error('Survey submission error:', error);
+                        this.submitting = false;
+                        alert('There was an error submitting your survey. Please try again.');
+                    }
+                },
+
+                shareOnSocial(platform) {
+                    const url = encodeURIComponent(window.location.origin + '/survey');
+                    const text = encodeURIComponent('Help shape the future of civic engagement in FCT! Take this 5-minute survey about The Public Square platform.');
+
+                    let shareUrl = '';
+                    switch(platform) {
+                        case 'whatsapp':
+                            shareUrl = `https://wa.me/?text=${text}%20${url}`;
+                            break;
+                        case 'twitter':
+                            shareUrl = `https://twitter.com/intent/tweet?text=${text}&url=${url}`;
+                            break;
+                        case 'facebook':
+                            shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                            break;
+                    }
+
+                    if (shareUrl) {
+                        window.open(shareUrl, '_blank');
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

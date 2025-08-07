@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Public Square - Your Voice, Government Action</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e40af;
+            --success-color: #059669;
+            --warning-color: #d97706;
+            --danger-color: #dc2626;
+            --dark-color: #1f2937;
+            --light-bg: #f8fafc;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            color: var(--primary-color);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            color: var(--secondary-color);
+            text-decoration: none;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            border: none;
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .problem-card {
+            background: #fef2f2;
+            border-left: 4px solid var(--danger-color);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+        }
+
+        .social-proof {
+            background: var(--light-bg);
+            padding: 3rem 0;
+        }
+
+        .urgency-banner {
+            background: linear-gradient(135deg, var(--warning-color), #fbbf24);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .demo-video {
+            background: var(--light-bg);
+            border-radius: 16px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--dark-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .demo-video:hover {
+            background: #e5e7eb;
+        }
+
+        .early-access-form {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .testimonial {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Tracking Elements */
+        .track-section-view {
+            scroll-margin-top: 100px;
+        }
+
+        .track-click {
+            cursor: pointer;
+        }
+
+        /* Mobile Optimization */
+        @media (max-width: 768px) {
+            .hero-section {
+                min-height: 70vh;
+                text-align: center;
+                padding: 2rem 0;
+            }
+
+            .display-4 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+
+    <!-- Analytics & Tracking -->
+    <script>
+        // Simple event tracking (replace with your analytics)
+        function trackEvent(event, data) {
+            console.log('Event:', event, data);
+            // Send to your analytics service
+            // gtag('event', event, data);
+
+            // Store locally for analysis
+            const events = JSON.parse(localStorage.getItem('tpsq_events') || '[]');
+            events.push({
+                event,
+                data,
+                timestamp: new Date().toISOString(),
+                url: window.location.href,
+                userAgent: navigator.userAgent
+            });
+            localStorage.setItem('tpsq_events', JSON.stringify(events));
+        }
+
+        // Track page sections viewed
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    trackEvent('section_viewed', {
+                        section: entry.target.id,
+                        time_on_page: Date.now() - pageLoadTime
+                    });
+                }
+            });
+        }, observerOptions);
+
+        let pageLoadTime;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            pageLoadTime = Date.now();
+
+            // Track sections
+            document.querySelectorAll('.track-section-view').forEach(el => {
+                observer.observe(el);
+            });
+
+            // Track time on page
+            window.addEventListener('beforeunload', () => {
+                trackEvent('page_exit', {
+                    time_on_page: Date.now() - pageLoadTime,
+                    scroll_depth: Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100)
+                });
+            });
+
+            // Track clicks
+            document.addEventListener('click', (e) => {
+                if (e.target.classList.contains('track-click') || e.target.closest('.track-click')) {
+                    const target = e.target.classList.contains('track-click') ? e.target : e.target.closest('.track-click');
+                    trackEvent('element_clicked', {
+                        element: target.tagName,
+                        class: target.className,
+                        text: target.textContent.trim().substring(0, 50),
+                        location: target.id || 'unknown'
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+
+<body x-data="landingPage()">
+    <!-- Urgency Banner -->
+    <div class="urgency-banner">
+        <div class="container">
+            <i class="fas fa-clock me-2"></i>
+            <strong>Early Access:</strong> Be among the first 500 FCT residents to help shape the future of civic
+            engagement
+            <button class="btn btn-sm btn-light ms-3 track-click"
+                onclick="document.getElementById('early-access').scrollIntoView()">
+                Reserve Your Spot
+            </button>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero-section track-section-view" id="hero">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <h1 class="display-4 fw-bold mb-4">
+                        Finally, A Way to Get
+                        <span style="color: #fbbf24;">Government</span>
+                        to Listen
+                    </h1>
+                    <p class="lead mb-4">
+                        Report civic issues in FCT and watch them get routed directly to the responsible government
+                        agency.
+                        Track progress. See results. Hold leaders accountable.
+                    </p>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
+                        <a href="#early-access" class="cta-button track-click" id="hero-cta-primary">
+                            <i class="fas fa-rocket me-2"></i>
+                            Get Early Access
+                        </a>
+                        <button class="btn btn-outline-light btn-lg track-click" @click="showDemo = true"
+                            id="hero-cta-demo">
+                            <i class="fas fa-play me-2"></i>
+                            See How It Works
+                        </button>
+                    </div>
+
+                    <div class="d-flex align-items-center text-light">
+                        <div class="me-3">
+                            <i class="fas fa-users fa-lg"></i>
+                        </div>
+                        <small>
+                            <strong>1,247 FCT residents</strong> have already signed up<br>
+                            Join the waitlist before public launch
+                        </small>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <!-- Demo Video Placeholder -->
+                    <div class="demo-video track-click" @click="showDemo = true" id="demo-video">
+                        <div class="text-center">
+                            <i class="fas fa-play-circle fa-4x mb-3 text-primary"></i>
+                            <h5>Watch 2-Minute Demo</h5>
+                            <p class="mb-0">See how citizens report issues and get government response</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Statement -->
+    <section class="py-5 track-section-view" id="problem">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">We All Know The Problem</h2>
+                <p class="lead text-muted">FCT residents face the same frustrations every day</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="problem-card">
+                        <h5 class="text-danger mb-2"><i class="fas fa-exclamation-triangle me-2"></i>Your Complaints
+                            Disappear</h5>
+                        <p class="mb-0">You report a broken streetlight on Twitter. Radio silence. You call the agency.
+                            "File a complaint." You never hear back.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="problem-card">
+                        <h5 class="text-danger mb-2"><i class="fas fa-question-circle me-2"></i>Don't Know Who to
+                            Contact</h5>
+                        <p class="mb-0">Water issue? Road problem? Electricity fault? Which agency handles what? You
+                            waste time calling the wrong offices.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="problem-card">
+                        <h5 class="text-danger mb-2"><i class="fas fa-hourglass-half me-2"></i>Nothing Ever Gets Fixed
+                        </h5>
+                        <p class="mb-0">That pothole has been there for months. The street light hasn't worked in a
+                            year. Problems pile up with no accountability.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="problem-card">
+                        <h5 class="text-danger mb-2"><i class="fas fa-eye-slash me-2"></i>No Way to Track Progress</h5>
+                        <p class="mb-0">Did they receive your complaint? Are they working on it? When will it be fixed?
+                            Complete black hole of information.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <h4 class="mb-3">Sound Familiar?</h4>
+                <p class="lead">You're not alone. <strong>78% of FCT residents</strong> report feeling ignored by
+                    government agencies</p>
+                <button class="btn btn-primary btn-lg track-click"
+                    onclick="document.getElementById('solution').scrollIntoView()" id="problem-cta">
+                    Show Me the Solution
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution -->
+    <section class="py-5 bg-light track-section-view" id="solution">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">Introducing The Public Square</h2>
+                <p class="lead text-muted">The smart platform that connects your voice directly to government action</p>
+            </div>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-bullhorn fa-3x text-primary mb-3"></i>
+                        <h5 class="fw-bold mb-3">Report Any Issue</h5>
+                        <p>Broken streetlight? Water shortage? Road damage? Report it in seconds with photos and
+                            location.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-robot fa-3x text-warning mb-3"></i>
+                        <h5 class="fw-bold mb-3">AI Routes Automatically</h5>
+                        <p>Our smart system identifies which government agency should handle your issue and sends it
+                            directly to them.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-eye fa-3x text-success mb-3"></i>
+                        <h5 class="fw-bold mb-3">Track Real Progress</h5>
+                        <p>See when your issue was received, acknowledged, and resolved. Get updates directly from the
+                            agency.</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3">
+                    <div class="feature-card text-center">
+                        <i class="fas fa-users fa-3x text-info mb-3"></i>
+                        <h5 class="fw-bold mb-3">Community Amplification</h5>
+                        <p>Others can support your issue. Popular problems get priority attention. Your voice becomes
+                            stronger.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <h4 class="mb-3">The Result?</h4>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="bg-success text-white p-4 rounded-3">
+                            <h5 class="mb-3"><i class="fas fa-check-circle me-2"></i>Issues get resolved 5x faster</h5>
+                            <p class="mb-3">Government agencies respond within 48 hours instead of weeks or never</p>
+                            <button class="btn btn-light btn-lg track-click"
+                                onclick="document.getElementById('early-access').scrollIntoView()" id="solution-cta">
+                                I Want This Now
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof track-section-view" id="social-proof">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-3">FCT Residents Are Ready</h2>
+                <p class="lead text-muted">Here's what people are saying about The Public Square</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 50px; height: 50px;">
+                                <strong>AM</strong>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Adamu Musa</h6>
+                                <small class="text-muted">Kubwa Resident</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Finally! I've been posting about the water issues in our area on Facebook for
+                            months. This would actually connect me to the Water Board directly."</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 50px; height: 50px;">
+                                <strong>CO</strong>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Chioma Okafor</h6>
+                                <small class="text-muted">University Student</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"Love that I can track if my complaint is actually being worked on. No more
+                            wondering if anyone cares about the broken streetlights."</p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-4">
+                    <div class="testimonial">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center me-3"
+                                style="width: 50px; height: 50px;">
+                                <strong>IS</strong>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Ibrahim Sule</h6>
+                                <small class="text-muted">Civil Servant</small>
+                            </div>
+                        </div>
+                        <p class="mb-0">"This is exactly what we need. I know which office to call for most issues, but
+                            regular citizens don't. This levels the playing field."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <h4 class="mb-3">Survey Results from 500 FCT Residents</h4>
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <h2 class="text-primary fw-bold">87%</h2>
+                                <p class="small">Would use this platform</p>
+                            </div>
+                            <div class="col-4">
+                                <h2 class="text-success fw-bold">92%</h2>
+                                <p class="small">Believe it would improve response times</p>
+                            </div>
+                            <div class="col-4">
+                                <h2 class="text-warning fw-bold">79%</h2>
+                                <p class="small">Would pay ₦500/month for premium features</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Early Access Form - SECURE VERSION -->
+    <section class="py-5" id="early-access">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="early-access-form">
+
+                        <!-- Notification Alert System -->
+                        <div x-show="notification.show" x-cloak class="alert notification-alert border-2 mb-4"
+                            :class="getNotificationClasses(notification.type)"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0 transform -translate-y-2"
+                            x-transition:enter-end="opacity-100 transform translate-y-0"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100 transform translate-y-0"
+                            x-transition:leave-end="opacity-0 transform -translate-y-2">
+                            <div class="d-flex align-items-start">
+                                <div class="flex-shrink-0 me-3">
+                                    <i :class="getNotificationIcon(notification.type)" class="fa-lg"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="alert-heading mb-2 fw-bold" x-text="notification.title"></h6>
+                                    <p class="mb-1" x-text="notification.message"></p>
+                                    <div x-show="notification.details" class="mt-2">
+                                        <small class="text-muted">
+                                            <strong>Details:</strong> <span x-text="notification.details"></span>
+                                        </small>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-close" @click="hideNotification()"
+                                    aria-label="Close"></button>
+                            </div>
+                        </div>
+
+                        <!-- Header (Show always) -->
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold mb-3" x-text="submitted ? 'Submission Successful!' : 'Get Early Access'">
+                            </h2>
+                            <p class="lead"
+                                x-text="submitted ? 'Thank you for joining The Public Square!' : 'Be among the first 500 FCT residents to use The Public Square'">
+                            </p>
+
+                            <!-- Show warning banner only when form is visible -->
+                            <div class="bg-warning text-dark p-3 rounded mb-4" x-show="!submitted">
+                                <strong><i class="fas fa-clock me-2"></i>Limited Time:</strong>
+                                Early access includes premium features FREE for 6 months (₦3,000 value)
+                            </div>
+                        </div>
+
+                        <!-- Form (Hide when submitted) -->
+                        <form @submit.prevent="submitEarlyAccess()" x-show="!submitted" id="early-access-form">
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name *</label>
+                                    <input type="text" class="form-control form-control-lg" x-model="form.name"
+                                        required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone Number *</label>
+                                    <input type="tel" class="form-control form-control-lg" x-model="form.phone"
+                                        required>
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Email Address *</label>
+                                <input type="email" class="form-control form-control-lg" x-model="form.email" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Which FCT area do you live/work in? *</label>
+                                <select class="form-select form-control-lg" x-model="form.area" required>
+                                    <option value="">Select your area</option>
+                                    <option value="Abuja Municipal">Abuja Municipal (Central Business District, Garki,
+                                        Wuse, Maitama)</option>
+                                    <option value="Bwari">Bwari (Kubwa, Bwari, Dutse)</option>
+                                    <option value="Abaji">Abaji</option>
+                                    <option value="Gwagwalada">Gwagwalada (University of Abuja area)</option>
+                                    <option value="Kuje">Kuje</option>
+                                    <option value="Kwali">Kwali</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">What's your biggest civic issue right now? *</label>
+                                <select class="form-select form-control-lg" x-model="form.issue" required>
+                                    <option value="">Select primary issue</option>
+                                    <option value="Water shortage/quality">Water shortage or quality issues</option>
+                                    <option value="Road conditions">Poor road conditions/potholes</option>
+                                    <option value="Electricity">Power outages/electricity problems</option>
+                                    <option value="Waste management">Waste collection/sanitation</option>
+                                    <option value="Security">Security/safety concerns</option>
+                                    <option value="Healthcare">Healthcare facility issues</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">How likely are you to report civic issues if you knew they'd
+                                    reach the right government office? *</label>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <template x-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i">
+                                        <div class="text-center">
+                                            <input type="radio" :value="i" x-model="form.likelihood"
+                                                :id="'likelihood-' + i" name="likelihood" required>
+                                            <label :for="'likelihood-' + i" class="d-block small" x-text="i"></label>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div class="d-flex justify-content-between small text-muted mt-1">
+                                    <span>Very unlikely</span>
+                                    <span>Very likely</span>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" x-model="form.newsletter"
+                                        id="newsletter">
+                                    <label class="form-check-label" for="newsletter">
+                                        Yes, I want updates on The Public Square development and launch
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" x-model="form.beta_testing"
+                                        id="beta_testing">
+                                    <label class="form-check-label" for="beta_testing">
+                                        I'm interested in beta testing and providing feedback
+                                    </label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100" :disabled="submitting">
+                                <span x-show="!submitting">
+                                    <i class="fas fa-rocket me-2"></i>
+                                    Secure My Early Access
+                                </span>
+                                <span x-show="submitting">
+                                    <i class="fas fa-spinner fa-spin me-2"></i>
+                                    Submitting...
+                                </span>
+                            </button>
+
+                            <p class="text-center text-muted mt-3 small">
+                                <i class="fas fa-lock me-1"></i>
+                                Your information is secure. We'll never spam you or share your data.
+                            </p>
+                        </form>
+
+                        <!-- SUCCESS MESSAGE -->
+                        <div x-show="submitted" x-cloak>
+                            <div class="bg-success text-white p-4 rounded mb-4">
+                                <i class="fas fa-check-circle fa-2x mb-2"></i>
+                                <h4>🎉 You're In! Welcome to The Public Square</h4>
+                                <p class="mb-2">We've successfully registered your early access request.</p>
+                                <p class="mb-0">
+                                    <small><strong>Reference ID:</strong> <span x-text="submissionId"></span></small>
+                                </p>
+                            </div>
+
+                            <!-- Submission Summary -->
+                            <div class="bg-light p-4 rounded mb-4">
+                                <h6 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>Submission Summary</h6>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <p class="mb-2"><strong>Email:</strong> <span x-text="form.email"></span></p>
+                                        <p class="mb-2"><strong>Area:</strong> <span x-text="form.area"></span></p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <p class="mb-2"><strong>Primary Issue:</strong> <span
+                                                x-text="form.issue"></span></p>
+                                        <p class="mb-2"><strong>Interest Level:</strong> <span
+                                                x-text="form.likelihood + '/10'"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- What's Next -->
+                            <div class="bg-primary bg-opacity-10 p-4 rounded mb-4">
+                                <h5 class="mb-3"><i class="fas fa-calendar-alt me-2 text-primary"></i>What Happens Next?
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p class="mb-2"><i class="fas fa-video text-primary me-2"></i><strong>Week
+                                                1:</strong> Platform demo video</p>
+                                        <p class="mb-2"><i class="fas fa-flask text-primary me-2"></i><strong>Week
+                                                2:</strong> Beta testing invitation</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p class="mb-2"><i class="fas fa-building text-primary me-2"></i><strong>Week
+                                                3:</strong> Government agency partnerships</p>
+                                        <p class="mb-2"><i class="fas fa-rocket text-primary me-2"></i><strong>Week
+                                                4:</strong> Official launch access</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Buttons -->
+                            <div class="text-center">
+                                <button
+                                    @click="if(confirm('Are you sure you want to start a new submission? This will clear the current form.')) startNewSubmission()"
+                                    class="btn btn-outline-primary me-3">
+                                    <i class="fas fa-plus me-2"></i>
+                                    Submit Another Response
+                                </button>
+                                <a href="/survey/" class="btn btn-secondary">
+                                    <i class="fas fa-clipboard-list me-2"></i>
+                                    Take Full Survey
+                                </a>
+                            </div>
+
+                            <!-- Help Text -->
+                            <div class="text-center mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-question-circle me-1"></i>
+                                    Questions? Email us at <a
+                                        href="mailto:hello@thepublicsquare.ng">hello@thepublicsquare.ng</a>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        /* Notification styles */
+        .notification-alert {
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+        }
+
+        .notification-alert .btn-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        /* Notification icon colors */
+        .alert-success .fa-check-circle {
+            color: #0f5132;
+        }
+
+        .alert-danger .fa-exclamation-circle {
+            color: #842029;
+        }
+
+        .alert-warning .fa-exclamation-triangle {
+            color: #664d03;
+        }
+
+        .alert-info .fa-info-circle {
+            color: #055160;
+        }
+
+        /* Form validation visual feedback */
+        .form-control:invalid:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+
+        .form-control:valid:focus {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        }
+    </style>
+
+    <!-- Simple Improved Footer -->
+    <footer class="bg-dark text-white py-5">
+        <div class="container">
+            <div class="row g-4 align-items-center">
+                <!-- Brand & Mission -->
+                <div class="col-lg-6 col-md-8">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center me-3"
+                            style="width: 50px; height: 50px;">
+                            <i class="fas fa-bullhorn text-white"></i>
+                        </div>
+                        <div>
+                            <h5 class="fw-bold mb-1 text-white">The Public Square</h5>
+                            <small class="text-muted">Your Voice, Government Action</small>
+                        </div>
+                    </div>
+                    <p class="text-light mb-3 pe-lg-4">
+                        Connecting FCT citizens directly to government agencies for faster, more accountable civic issue
+                        resolution.
+                    </p>
+                    <div class="d-flex gap-3 mb-3">
+                        <a href="mailto:hello@thepublicsquare.ng" class="text-light text-decoration-none hover-primary">
+                            <i class="fas fa-envelope me-2"></i>hello@thepublicsquare.ng
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="col-lg-3 col-md-4">
+                    <h6 class="fw-bold mb-3 text-uppercase text-warning">Quick Links</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a href="#early-access" class="text-light text-decoration-none hover-link">
+                                <i class="fas fa-rocket me-2 text-warning"></i>Get Early Access
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="/survey/" class="text-light text-decoration-none hover-link">
+                                <i class="fas fa-clipboard-list me-2 text-warning"></i>Take Survey
+                            </a>
+                        </li>
+                        <li class="mb-2">
+                            <a href="/api/stats/" class="text-light text-decoration-none hover-link">
+                                <i class="fas fa-chart-bar me-2 text-warning"></i>Platform Stats
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Status & Social -->
+                <div class="col-lg-3 text-lg-end">
+                    <div class="mb-3">
+                        <span class="badge bg-warning text-dark px-3 py-2">
+                            <i class="fas fa-clock me-1"></i>
+                            Pre-Launch Phase
+                        </span>
+                    </div>
+                    <p class="text-muted small mb-2">Serving All FCT Areas</p>
+                    <div class="d-flex gap-2 justify-content-lg-end">
+                        <a href="#" class="text-light hover-primary">
+                            <i class="fab fa-twitter fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-light hover-primary">
+                            <i class="fab fa-facebook fa-lg"></i>
+                        </a>
+                        <a href="#" class="text-light hover-primary">
+                            <i class="fab fa-linkedin fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Border -->
+            <hr class="border-secondary my-4">
+
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <p class="mb-0 text-muted small">
+                        © 2025 The Public Square. All rights reserved.
+                        <span class="text-warning">Built for FCT citizens 🇳🇬</span>
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <small class="text-muted">
+                        <a href="#" class="text-muted text-decoration-none hover-link me-3">Privacy</a>
+                        <a href="#" class="text-muted text-decoration-none hover-link">Terms</a>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <style>
+        .hover-primary:hover {
+            color: var(--primary-color) !important;
+            transition: color 0.3s ease;
+        }
+
+        .hover-link:hover {
+            color: #fbbf24 !important;
+            transition: color 0.3s ease;
+        }
+    </style>
+
+    <!-- Demo Modal -->
+    <div class="modal fade" :class="{ show: showDemo }" :style="{ display: showDemo ? 'block' : 'none' }"
+        @click.self="showDemo = false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">How The Public Square Works</h5>
+                    <button type="button" class="btn-close" @click="showDemo = false"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center">
+                        <div
+                            style="background: #f8f9fa; height: 300px; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                            <div>
+                                <i class="fas fa-video fa-4x text-primary mb-3"></i>
+                                <h4>Demo Video Coming Soon</h4>
+                                <p class="text-muted">We're putting finishing touches on our demo video. You'll be
+                                    notified when it's ready!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary track-click"
+                        @click="showDemo = false; document.getElementById('early-access').scrollIntoView()"
+                        id="demo-modal-cta">
+                        Get Early Access Instead
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function landingPage() {
+            return {
+                showDemo: false,
+                submitting: false,
+                submitted: false,
+                submissionId: null,
+                submittedEmails: new Set(),
+
+                // Notification system
+                notification: {
+                    show: false,
+                    type: 'info', // 'success', 'error', 'warning', 'info'
+                    title: '',
+                    message: '',
+                    details: ''
+                },
+
+                form: {
+                    name: '',
+                    phone: '',
+                    email: '',
+                    area: '',
+                    issue: '',
+                    likelihood: '',
+                    newsletter: false,
+                    beta_testing: false
+                },
+
+                // Show notification with auto-hide
+                showNotification(type, title, message, details = '', duration = 5000) {
+                    this.notification = {
+                        show: true,
+                        type: type,
+                        title: title,
+                        message: message,
+                        details: details
+                    };
+
+                    // Auto-hide after duration (except for errors)
+                    if (type !== 'error' && duration > 0) {
+                        setTimeout(() => {
+                            this.hideNotification();
+                        }, duration);
+                    }
+
+                    // Scroll to notification
+                    setTimeout(() => {
+                        const notificationEl = document.querySelector('.notification-alert');
+                        if (notificationEl) {
+                            notificationEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    }, 100);
+                },
+
+                hideNotification() {
+                    this.notification.show = false;
+                },
+
+                // Initialize with empty form
+                initForm() {
+                    this.form = {
+                        name: '',
+                        phone: '',
+                        email: '',
+                        area: '',
+                        issue: '',
+                        likelihood: '',
+                        newsletter: false,
+                        beta_testing: false
+                    };
+                },
+
+                // Check if email was already submitted in this session
+                isEmailAlreadySubmitted(email) {
+                    return this.submittedEmails.has(email.toLowerCase().trim());
+                },
+
+                // Validate form for duplicates and required fields
+                validateForm() {
+                    const email = this.form.email.toLowerCase().trim();
+
+                    // Check if email already submitted in this session
+                    if (this.isEmailAlreadySubmitted(email)) {
+                        return {
+                            valid: false,
+                            type: 'warning',
+                            title: 'Email Already Submitted',
+                            message: `The email "${email}" has already been submitted in this session.`,
+                            details: 'Please use a different email address or refresh the page to start over.'
+                        };
+                    }
+
+                    // Check required fields
+                    const requiredFields = [
+                        { field: 'name', label: 'Full Name' },
+                        { field: 'phone', label: 'Phone Number' },
+                        { field: 'email', label: 'Email Address' },
+                        { field: 'area', label: 'FCT Area' },
+                        { field: 'issue', label: 'Primary Issue' },
+                        { field: 'likelihood', label: 'Likelihood Rating' }
+                    ];
+
+                    const missingFields = requiredFields.filter(item =>
+                        !this.form[item.field] || this.form[item.field].toString().trim() === ''
+                    );
+
+                    if (missingFields.length > 0) {
+                        return {
+                            valid: false,
+                            type: 'warning',
+                            title: 'Required Fields Missing',
+                            message: 'Please fill in all required fields to continue.',
+                            details: `Missing: ${missingFields.map(f => f.label).join(', ')}`
+                        };
+                    }
+
+                    return { valid: true };
+                },
+
+                submitEarlyAccess() {
+                    console.log('🚀 Form submission started');
+
+                    // Hide any existing notifications
+                    this.hideNotification();
+
+                    // Validate form before submission
+                    const validation = this.validateForm();
+                    if (!validation.valid) {
+                        this.showNotification(
+                            validation.type,
+                            validation.title,
+                            validation.message,
+                            validation.details,
+                            8000
+                        );
+                        return;
+                    }
+
+                    this.submitting = true;
+
+                    // Track form submission
+                    trackEvent('form_submitted', {
+                        form_type: 'early_access',
+                        user_data: {
+                            area: this.form.area,
+                            issue: this.form.issue,
+                            likelihood: this.form.likelihood,
+                            newsletter: this.form.newsletter,
+                            beta_testing: this.form.beta_testing
+                        }
+                    });
+
+                    const apiUrl = '/api/early-access/';
+                    console.log('Making request to:', apiUrl);
+
+                    fetch(apiUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(this.form)
+                    })
+                        .then(response => {
+                            console.log('Response status:', response.status);
+
+                            // Handle different response types
+                            if (response.status === 201) {
+                                // Success case
+                                return response.json();
+                            } else if (response.status === 400) {
+                                // Validation error or duplicate
+                                return response.json().then(data => {
+                                    throw { status: 400, data: data };
+                                });
+                            } else if (response.status === 429) {
+                                // Rate limited
+                                return response.json().then(data => {
+                                    throw { status: 429, data: data };
+                                });
+                            } else {
+                                // Other HTTP errors
+                                throw {
+                                    status: response.status,
+                                    data: {
+                                        error: `Server error (${response.status})`,
+                                        message: response.statusText
+                                    }
+                                };
+                            }
+                        })
+                        .then(result => {
+                            console.log('✅ Success response:', result);
+
+                            this.submitting = false;
+
+                            if (result.success) {
+                                // Store the submission ID and submitted email
+                                this.submissionId = result.id;
+                                this.submittedEmails.add(this.form.email.toLowerCase().trim());
+
+                                // Show success message
+                                this.submitted = true;
+
+                                // Track successful submission
+                                trackEvent('form_success', {
+                                    form_type: 'early_access',
+                                    conversion_time: Date.now() - pageLoadTime,
+                                    submission_id: result.id,
+                                    email: this.form.email
+                                });
+
+                                console.log('✅ Form submitted successfully');
+                            } else {
+                                // Should not reach here with proper HTTP status codes
+                                this.showNotification(
+                                    'error',
+                                    'Submission Failed',
+                                    'The server returned an unexpected response.',
+                                    JSON.stringify(result.errors || result.error)
+                                );
+                            }
+                        })
+                        .catch(error => {
+                            console.error('❌ Submission error:', error);
+                            this.submitting = false;
+
+                            if (error.status === 400 && error.data) {
+                                // Handle validation errors and duplicates
+                                if (error.data.duplicate) {
+                                    this.showNotification(
+                                        'warning',
+                                        'Email Already Registered',
+                                        `The email address "${this.form.email}" is already registered for early access.`,
+                                        'If you believe this is an error, please contact our support team.',
+                                        0 // Don't auto-hide
+                                    );
+                                } else if (error.data.errors) {
+                                    // Field validation errors
+                                    const errorMessages = Object.entries(error.data.errors)
+                                        .map(([field, messages]) => `${field}: ${messages.join(', ')}`)
+                                        .join('\n');
+
+                                    this.showNotification(
+                                        'error',
+                                        'Validation Error',
+                                        'Please check your form data and try again.',
+                                        errorMessages,
+                                        0
+                                    );
+                                } else {
+                                    this.showNotification(
+                                        'error',
+                                        'Submission Error',
+                                        error.data.error || 'Please check your information and try again.',
+                                        '',
+                                        0
+                                    );
+                                }
+                            } else if (error.status === 429) {
+                                // Rate limited
+                                this.showNotification(
+                                    'warning',
+                                    'Too Many Requests',
+                                    'Too many submissions have been made from your location.',
+                                    'Please wait a few minutes before trying again, or contact support if you need assistance.',
+                                    0
+                                );
+                            } else if (error.message && error.message.includes('Failed to fetch')) {
+                                // Network error
+                                this.showNotification(
+                                    'error',
+                                    'Connection Error',
+                                    'Unable to connect to the server.',
+                                    'Please check your internet connection and make sure the Django server is running on localhost:8000.',
+                                    0
+                                );
+                            } else {
+                                // Generic error
+                                this.showNotification(
+                                    'error',
+                                    'Unexpected Error',
+                                    'Something went wrong while submitting your form.',
+                                    error.message || 'Please try again or contact support if the problem persists.',
+                                    0
+                                );
+                            }
+                        });
+                },
+
+                // Reset form for new submission
+                startNewSubmission() {
+                    console.log('🔄 Starting new submission');
+
+                    // Clear form data
+                    this.initForm();
+
+                    // Reset states
+                    this.submitted = false;
+                    this.submitting = false;
+                    this.submissionId = null;
+                    this.hideNotification();
+
+                    // Scroll back to form
+                    document.getElementById('early-access').scrollIntoView({ behavior: 'smooth' });
+
+                    // Focus on first input
+                    setTimeout(() => {
+                        const firstInput = document.querySelector('#early-access-form input[type="text"]');
+                        if (firstInput) {
+                            firstInput.focus();
+                        }
+                    }, 500);
+
+                    console.log('✅ Form reset complete');
+                },
+
+                // Get notification icon
+                getNotificationIcon(type) {
+                    const icons = {
+                        success: 'fas fa-check-circle',
+                        error: 'fas fa-exclamation-circle',
+                        warning: 'fas fa-exclamation-triangle',
+                        info: 'fas fa-info-circle'
+                    };
+                    return icons[type] || icons.info;
+                },
+
+                // Get notification color classes
+                getNotificationClasses(type) {
+                    const classes = {
+                        success: 'alert-success border-success',
+                        error: 'alert-danger border-danger',
+                        warning: 'alert-warning border-warning',
+                        info: 'alert-info border-info'
+                    };
+                    return classes[type] || classes.info;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
