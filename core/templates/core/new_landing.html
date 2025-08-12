@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Voice, Your Choice</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: #1a1a1a;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0.75rem;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.04) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+            position: relative;
+            z-index: 1;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 1.0rem;
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            animation: slideIn 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b 0%, #4ecdc4 50%, #45b7d1 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 0;
+        }
+
+        .problem-statement {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: #1a1a1a;
+            line-height: 1.1;
+            margin-bottom: 0.60rem;
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .current-behavior {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            font-style: italic;
+            text-align: center;
+            line-height: 1.1;
+        }
+
+        .main-question {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .options-section {
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #34495e;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .option:hover {
+            background: linear-gradient(135deg, #e8f4fd, #d4edda);
+            border-color: #3498db;
+            transform: scale(1.02);
+        }
+
+        .option.selected {
+            background: linear-gradient(135deg, #d5f4e6, #b8e6c1);
+            border-color: #27ae60;
+            transform: scale(1.02);
+        }
+
+        .option input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            margin-right: 0.75rem;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .option label {
+            cursor: pointer;
+            font-size: 0.8rem;
+            color: #2c3e50;
+            font-weight: 600;
+            flex: 1;
+            line-height: 1.2;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 14px;
+            padding: 1rem;
+            color: white;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .cta-title {
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 0.60rem;
+            position: relative;
+            z-index: 1;
+            line-height: 1.1;
+        }
+
+        .form-group {
+            margin-bottom: 0.6rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem 0.875rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+            background: white;
+        }
+
+        .form-input::placeholder {
+            color: #7f8c8d;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 1;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+
+        .submit-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .privacy-note {
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-top: 0.5rem;
+            line-height: 1.4;
+            position: relative;
+            z-index: 1;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Tablet Portrait: 768px and up */
+        @media (min-width: 768px) {
+            body {
+                padding: 1.5rem;
+            }
+
+            .main-card {
+                padding: 2.5rem;
+                border-radius: 24px;
+            }
+
+            .problem-statement {
+                font-size: 2.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .current-behavior {
+                font-size: 1.2rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .main-question {
+                font-size: 1.6rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .section-label {
+                font-size: 1.1rem;
+            }
+
+            .option {
+                padding: 1rem;
+            }
+
+            .option label {
+                font-size: 1rem;
+            }
+
+            .cta-section {
+                padding: 2rem;
+            }
+
+            .cta-title {
+                font-size: 1.4rem;
+            }
+
+            .form-input {
+                padding: 1rem 1.25rem;
+                font-size: 1rem;
+            }
+
+            .submit-button {
+                padding: 1.25rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Desktop: 1024px and up */
+        @media (min-width: 1024px) {
+            body {
+                padding: 2rem;
+            }
+
+            .container {
+                max-width: 1200px;
+            }
+
+            .main-card {
+                padding: 3.5rem;
+                border-radius: 32px;
+            }
+
+            .content-wrapper {
+                flex-direction: row;
+                gap: 3rem;
+                align-items: center;
+            }
+
+            .left-section {
+                flex: 1.3;
+                padding-right: 1rem;
+            }
+
+            .right-section {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .problem-statement {
+                font-size: 3.2rem;
+                text-align: left;
+                margin-bottom: 2rem;
+            }
+
+            .current-behavior {
+                font-size: 1.4rem;
+                text-align: left;
+                margin-bottom: 2rem;
+            }
+
+            .main-question {
+                font-size: 2rem;
+                text-align: left;
+                margin-bottom: 2rem;
+                position: relative;
+            }
+
+            .main-question::before {
+                content: '❓';
+                position: absolute;
+                left: -3rem;
+                top: 0;
+                font-size: 2.5rem;
+                opacity: 0.3;
+            }
+
+            .section-label {
+                font-size: 1.3rem;
+                text-align: left;
+            }
+
+            .option {
+                padding: 1.25rem 1.5rem;
+            }
+
+            .option input[type="radio"] {
+                width: 22px;
+                height: 22px;
+            }
+
+            .option label {
+                font-size: 1.1rem;
+            }
+
+            .cta-section {
+                padding: 3rem;
+                border-radius: 24px;
+            }
+
+            .cta-title {
+                font-size: 1.8rem;
+                margin-bottom: 2rem;
+            }
+
+            .form-input {
+                padding: 1.25rem 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            .submit-button {
+                padding: 1.5rem;
+                font-size: 1.3rem;
+                margin-top: 1rem;
+            }
+        }
+
+        /* Large Desktop: 1440px and up */
+        @media (min-width: 1440px) {
+            .main-card {
+                padding: 4rem;
+            }
+
+            .content-wrapper {
+                gap: 4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="main-card">
+            <div class="content-wrapper">
+                <div class="left-section">
+                    <div class="problem-statement">
+                        Bad roads, no light, and refuse left for weeks is wrong.
+                    </div>
+
+                    <div class="current-behavior">
+                        You talk about it, find a way around it, and move on.
+                    </div>
+
+                    <div class="main-question">
+                        If you could report it and get updates on whether it is being resolved or not, would you do so?
+                    </div>
+
+                    <div class="options-section">
+                        <div class="section-label">Which of these best describes what you want done?</div>
+                        <div class="option-group">
+                            <div class="option">
+                                <input type="radio" id="option1" name="preference" value="report_and_check">
+                                <label for="option1">Report issue(s) and check if others have the same problem</label>
+                            </div>
+                            <!-- <div class="option">
+                                <input type="radio" id="option2" name="preference" value="report_and_updates">
+                                <label for="option2">Report issue(s) and get updates as progress is made</label>
+                            </div> -->
+                            <div class="option">
+                                <input type="radio" id="option3" name="preference" value="report_and_response">
+                                <label for="option3">Report issue(s) and get a response from the right office</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="option4" name="preference" value="report_and_follow">
+                                <label for="option4">Report issue(s) and follow it until it is fixed</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-section">
+                    <div class="cta-section">
+                        <div class="cta-title">Be first to know when we’re live</div>
+
+                        <form id="signupForm">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" class="form-input" placeholder="NAME" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" class="form-input" placeholder="EMAIL"
+                                    required>
+                            </div>
+                            <button type="submit" class="submit-button" id="submitBtn">
+                                Get Early Access
+                            </button>
+                            <div class="privacy-note">
+                                🔒 We'll only notify you when the platform launches
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('signupForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const options = document.querySelectorAll('.option');
+
+            // Handle option selection visual feedback
+            options.forEach(option => {
+                const radio = option.querySelector('input[type="radio"]');
+
+                option.addEventListener('click', function () {
+                    // Remove selected class from all options
+                    options.forEach(opt => opt.classList.remove('selected'));
+
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+
+                    // Check the radio button
+                    radio.checked = true;
+
+                    // Enable submit button
+                    updateSubmitButton();
+                });
+
+                radio.addEventListener('change', function () {
+                    updateSubmitButton();
+                });
+            });
+
+            // Handle form validation
+            function updateSubmitButton() {
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const selectedOption = document.querySelector('input[name="preference"]:checked');
+
+                if (name && email && selectedOption) {
+                    submitBtn.disabled = false;
+                } else {
+                    submitBtn.disabled = true;
+                }
+            }
+
+            // Add input listeners
+            document.getElementById('name').addEventListener('input', updateSubmitButton);
+            document.getElementById('email').addEventListener('input', updateSubmitButton);
+
+            // Handle form submission
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const formData = {
+                    name: document.getElementById('name').value,
+                    email: document.getElementById('email').value,
+                    preference: document.querySelector('input[name="preference"]:checked').value
+                };
+
+                console.log('Form Data:', formData);
+
+                // Show success state
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'WELCOME! 🎉';
+                submitBtn.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.style.background = 'linear-gradient(135deg, #e74c3c, #c0392b)';
+                    form.reset();
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    updateSubmitButton();
+                }, 3000);
+            });
+
+            // Initial button state
+            updateSubmitButton();
+        });
+    </script>
+</body>
+
+</html>
