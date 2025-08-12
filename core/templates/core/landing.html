@@ -490,7 +490,7 @@
                 <div class="col-lg-8">
                     <div class="early-access-form">
 
-                        <!-- Notification Alert System -->
+                        <!-- Notification System (Keep existing functionality) -->
                         <div x-show="notification.show" x-cloak class="alert notification-alert border-2 mb-4"
                             :class="getNotificationClasses(notification.type)"
                             x-transition:enter="transition ease-out duration-300"
@@ -517,22 +517,29 @@
                             </div>
                         </div>
 
-                        <!-- Header (Show always) -->
+                        <!-- Header (Updated Copy) -->
                         <div class="text-center mb-4">
-                            <h2 class="fw-bold mb-3" x-text="submitted ? 'Submission Successful!' : 'Get Early Access'">
+                            <h2 class="fw-bold mb-3"
+                                x-text="submitted ? 'Your Voice is Now Part of the System!' : 'Ready to Stop Grumbling?'">
                             </h2>
-                            <p class="lead"
-                                x-text="submitted ? 'Thank you for joining The Public Square!' : 'Be among the first 500 FCT residents to use The Public Square'">
+                            <p class="lead" x-show="!submitted">
+                                Join <strong>1,200+ FCT residents</strong> who've chosen to turn their complaints into
+                                collective action.
+                            </p>
+                            <p class="lead text-success" x-show="submitted">
+                                🎉 Thank you! Your voice will now be part of something bigger than individual
+                                complaints.
                             </p>
 
-                            <!-- Show warning banner only when form is visible -->
+                            <!-- Updated warning banner -->
                             <div class="bg-warning text-dark p-3 rounded mb-4" x-show="!submitted">
-                                <strong><i class="fas fa-clock me-2"></i>Limited Time:</strong>
-                                Early access includes premium features FREE for 6 months (₦3,000 value)
+                                <strong><i class="fas fa-users me-2"></i>Early Community:</strong>
+                                First 500 residents help shape how The Public Square works in FCT + FREE premium
+                                features for 6 months
                             </div>
                         </div>
 
-                        <!-- Form (Hide when submitted) -->
+                        <!-- Form (Keep all existing functionality) -->
                         <form @submit.prevent="submitEarlyAccess()" x-show="!submitted" id="early-access-form">
                             <div class="row g-3 mb-3">
                                 <div class="col-md-6">
@@ -567,22 +574,28 @@
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">What's your biggest civic issue right now? *</label>
+                                <label class="form-label">What issue frustrates you most when you "grumble and move on"?
+                                    *</label>
                                 <select class="form-select form-control-lg" x-model="form.issue" required>
-                                    <option value="">Select primary issue</option>
-                                    <option value="Water shortage/quality">Water shortage or quality issues</option>
-                                    <option value="Road conditions">Poor road conditions/potholes</option>
-                                    <option value="Electricity">Power outages/electricity problems</option>
-                                    <option value="Waste management">Waste collection/sanitation</option>
-                                    <option value="Security">Security/safety concerns</option>
-                                    <option value="Healthcare">Healthcare facility issues</option>
-                                    <option value="Other">Other</option>
+                                    <option value="">Select the issue you're tired of accepting</option>
+                                    <option value="Water shortage/quality">Water shortage/quality (tired of buying water
+                                        daily)</option>
+                                    <option value="Road conditions">Bad roads/potholes (tired of car repairs)</option>
+                                    <option value="Electricity">Power cuts (tired of generator costs)</option>
+                                    <option value="Waste management">Poor waste collection (tired of dirty environment)
+                                    </option>
+                                    <option value="Security">Security concerns (tired of feeling unsafe)</option>
+                                    <option value="Healthcare">Healthcare issues (tired of poor service)</option>
+                                    <option value="Other">Other frustrations</option>
                                 </select>
                             </div>
 
                             <div class="mb-3">
-                                <label class="form-label">How likely are you to report civic issues if you knew they'd
-                                    reach the right government office? *</label>
+                                <label class="form-label">
+                                    If you knew your complaint would join others and actually reach the right government
+                                    office,
+                                    how likely would you be to report issues? *
+                                </label>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <template x-for="i in [1,2,3,4,5,6,7,8,9,10]" :key="i">
                                         <div class="text-center">
@@ -593,8 +606,8 @@
                                     </template>
                                 </div>
                                 <div class="d-flex justify-content-between small text-muted mt-1">
-                                    <span>Very unlikely</span>
-                                    <span>Very likely</span>
+                                    <span>"Still waste of time"</span>
+                                    <span>"Definitely would try!"</span>
                                 </div>
                             </div>
 
@@ -603,90 +616,95 @@
                                     <input class="form-check-input" type="checkbox" x-model="form.newsletter"
                                         id="newsletter">
                                     <label class="form-check-label" for="newsletter">
-                                        Yes, I want updates on The Public Square development and launch
+                                        Yes, keep me updated on how The Public Square is working for FCT residents
                                     </label>
                                 </div>
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" x-model="form.beta_testing"
                                         id="beta_testing">
                                     <label class="form-check-label" for="beta_testing">
-                                        I'm interested in beta testing and providing feedback
+                                        I'm interested in testing the platform early and giving feedback
                                     </label>
                                 </div>
                             </div>
 
                             <button type="submit" class="btn btn-primary btn-lg w-100" :disabled="submitting">
                                 <span x-show="!submitting">
-                                    <i class="fas fa-rocket me-2"></i>
-                                    Secure My Early Access
+                                    <i class="fas fa-users me-2"></i>
+                                    Join the Movement - Stop Grumbling!
                                 </span>
                                 <span x-show="submitting">
                                     <i class="fas fa-spinner fa-spin me-2"></i>
-                                    Submitting...
+                                    Adding Your Voice...
                                 </span>
                             </button>
 
                             <p class="text-center text-muted mt-3 small">
-                                <i class="fas fa-lock me-1"></i>
-                                Your information is secure. We'll never spam you or share your data.
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Your information is secure and will only be used to keep you updated on The Public
+                                Square.
                             </p>
                         </form>
 
-                        <!-- SUCCESS MESSAGE -->
+                        <!-- SUCCESS MESSAGE (Updated) -->
                         <div x-show="submitted" x-cloak>
                             <div class="bg-success text-white p-4 rounded mb-4">
-                                <i class="fas fa-check-circle fa-2x mb-2"></i>
-                                <h4>🎉 You're In! Welcome to The Public Square</h4>
-                                <p class="mb-2">We've successfully registered your early access request.</p>
+                                <i class="fas fa-users fa-2x mb-2"></i>
+                                <h4>🎉 Welcome to The Movement!</h4>
+                                <p class="mb-2">You're now part of a growing community that's changing how FCT residents
+                                    engage with government.</p>
                                 <p class="mb-0">
-                                    <small><strong>Reference ID:</strong> <span x-text="submissionId"></span></small>
+                                    <small><strong>Your Reference ID:</strong> <span
+                                            x-text="submissionId"></span></small>
                                 </p>
                             </div>
 
                             <!-- Submission Summary -->
                             <div class="bg-light p-4 rounded mb-4">
-                                <h6 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>Submission Summary</h6>
+                                <h6 class="mb-3"><i class="fas fa-clipboard-check me-2"></i>What You Told Us</h6>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <p class="mb-2"><strong>Email:</strong> <span x-text="form.email"></span></p>
-                                        <p class="mb-2"><strong>Area:</strong> <span x-text="form.area"></span></p>
+                                        <p class="mb-2"><strong>Your Area:</strong> <span x-text="form.area"></span></p>
+                                        <p class="mb-2"><strong>Main Frustration:</strong> <span
+                                                x-text="form.issue"></span></p>
                                     </div>
                                     <div class="col-sm-6">
-                                        <p class="mb-2"><strong>Primary Issue:</strong> <span
-                                                x-text="form.issue"></span></p>
-                                        <p class="mb-2"><strong>Interest Level:</strong> <span
+                                        <p class="mb-2"><strong>Willingness to Report:</strong> <span
                                                 x-text="form.likelihood + '/10'"></span></p>
+                                        <p class="mb-2"><strong>Community Role:</strong> <span
+                                                x-text="form.beta_testing ? 'Early Tester' : 'Community Member'"></span>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- What's Next -->
+                            <!-- What's Next (Updated) -->
                             <div class="bg-primary bg-opacity-10 p-4 rounded mb-4">
-                                <h5 class="mb-3"><i class="fas fa-calendar-alt me-2 text-primary"></i>What Happens Next?
-                                </h5>
+                                <h5 class="mb-3"><i class="fas fa-calendar-alt me-2 text-primary"></i>From Grumbling to
+                                    Action</h5>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <p class="mb-2"><i class="fas fa-video text-primary me-2"></i><strong>Week
-                                                1:</strong> Platform demo video</p>
+                                                1:</strong> See the platform in action</p>
                                         <p class="mb-2"><i class="fas fa-flask text-primary me-2"></i><strong>Week
-                                                2:</strong> Beta testing invitation</p>
+                                                2:</strong> Join early testing (if opted in)</p>
                                     </div>
                                     <div class="col-md-6">
-                                        <p class="mb-2"><i class="fas fa-building text-primary me-2"></i><strong>Week
-                                                3:</strong> Government agency partnerships</p>
+                                        <p class="mb-2"><i class="fas fa-handshake text-primary me-2"></i><strong>Week
+                                                3:</strong> First government agency partnerships</p>
                                         <p class="mb-2"><i class="fas fa-rocket text-primary me-2"></i><strong>Week
-                                                4:</strong> Official launch access</p>
+                                                4:</strong> Start reporting real issues!</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Action Buttons -->
+                            <!-- Action Buttons (Updated) -->
                             <div class="text-center">
                                 <button
-                                    @click="if(confirm('Are you sure you want to start a new submission? This will clear the current form.')) startNewSubmission()"
+                                    @click="if(confirm('Are you sure you want to register someone else? This will clear the current form.')) startNewSubmission()"
                                     class="btn btn-outline-primary me-3">
-                                    <i class="fas fa-plus me-2"></i>
-                                    Submit Another Response
+                                    <i class="fas fa-user-plus me-2"></i>
+                                    Register Someone Else
                                 </button>
                                 <a href="/survey/" class="btn btn-secondary">
                                     <i class="fas fa-clipboard-list me-2"></i>
@@ -698,7 +716,7 @@
                             <div class="text-center mt-3">
                                 <small class="text-muted">
                                     <i class="fas fa-question-circle me-1"></i>
-                                    Questions? Email us at <a
+                                    Questions? We're here to help: <a
                                         href="mailto:hello@thepublicsquare.ng">hello@thepublicsquare.ng</a>
                                 </small>
                             </div>

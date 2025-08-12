@@ -10,5 +10,10 @@ urlpatterns = [
     # Frontend pages
     path("", views.LandingPageView.as_view(), name="landing_page"),  # Root landing page
     path("landing/", views.LandingPageView.as_view(), name="landing_page"),
+    path(
+        "facebook-ads/landing/",
+        views.AdsLandingPageView.as_view(),
+        name="ads_landing_page",
+    ),
     path("survey/", views.QuestionnaireView.as_view(), name="questionnaire_page"),
 ]

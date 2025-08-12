@@ -24,6 +24,12 @@ class LandingPageView(TemplateView):
     template_name = "core/landing.html"
 
 
+class AdsLandingPageView(TemplateView):
+    """Serve the landing page directly from Django"""
+
+    template_name = "core/ads_landing.html"
+
+
 class QuestionnaireView(TemplateView):
     """Serve the questionnaire directly from Django"""
 
