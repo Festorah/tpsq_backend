@@ -21,13 +21,31 @@ logger = logging.getLogger(__name__)
 class LandingPageView(TemplateView):
     """Serve the landing page directly from Django"""
 
-    template_name = "core/landing.html"
+    template_name = "core/landing_pages_directory.html"
 
 
-class AdsLandingPageView(TemplateView):
+class UnconcernedLandingPageView(TemplateView):
     """Serve the landing page directly from Django"""
 
-    template_name = "core/ads_landing.html"
+    template_name = "core/unconcerned.html"
+
+
+class FrustratedActivistLandingPageView(TemplateView):
+    """Serve the landing page directly from Django"""
+
+    template_name = "core/frustrated_activists_page.html"
+
+
+class ConcernedParentsLandingPageView(TemplateView):
+    """Serve the landing page directly from Django"""
+
+    template_name = "core/concerned_parents_page.html"
+
+
+class HopefulChangeMakersLandingPageView(TemplateView):
+    """Serve the landing page directly from Django"""
+
+    template_name = "core/hopeful_changemakers_page.html"
 
 
 class QuestionnaireView(TemplateView):

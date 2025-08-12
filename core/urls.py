@@ -11,9 +11,24 @@ urlpatterns = [
     path("", views.LandingPageView.as_view(), name="landing_page"),  # Root landing page
     path("landing/", views.LandingPageView.as_view(), name="landing_page"),
     path(
-        "facebook-ads/landing/",
-        views.AdsLandingPageView.as_view(),
-        name="ads_landing_page",
+        "landing/unconcerned/",
+        views.UnconcernedLandingPageView.as_view(),
+        name="unconcerned",
+    ),
+    path(
+        "landing/frustrated-activists/",
+        views.FrustratedActivistLandingPageView.as_view(),
+        name="frustrated_activists",
+    ),
+    path(
+        "landing/concerned-parents/",
+        views.ConcernedParentsLandingPageView.as_view(),
+        name="concerned_parents",
+    ),
+    path(
+        "landing/hopeful-changemakers/",
+        views.HopefulChangeMakersLandingPageView.as_view(),
+        name="hopeful_changemakers",
     ),
     path("survey/", views.QuestionnaireView.as_view(), name="questionnaire_page"),
 ]

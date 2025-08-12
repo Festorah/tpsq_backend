@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TPSq Landing Pages - Design Review</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #6c757d;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .pages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .page-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .page-card.unconcerned {
+            border-color: #667eea;
+        }
+
+        .page-card.unconcerned::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+
+        .page-card.activists {
+            border-color: #e74c3c;
+        }
+
+        .page-card.activists::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+        }
+
+        .page-card.parents {
+            border-color: #3498db;
+        }
+
+        .page-card.parents::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+
+        .page-card.changemakers {
+            border-color: #9b59b6;
+        }
+
+        .page-card.changemakers::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #9b59b6, #8e44ad);
+        }
+
+        .page-number {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .unconcerned .page-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .activists .page-number {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .parents .page-number {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+        }
+
+        .changemakers .page-number {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #1a1a1a;
+        }
+
+        .demographic {
+            font-size: 1rem;
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .headline-preview {
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #495057;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            margin: 1rem 0;
+        }
+
+        .activists .headline-preview {
+            border-left-color: #e74c3c;
+        }
+
+        .parents .headline-preview {
+            border-left-color: #3498db;
+        }
+
+        .changemakers .headline-preview {
+            border-left-color: #9b59b6;
+        }
+
+        .target-info {
+            margin: 1rem 0;
+        }
+
+        .target-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+        }
+
+        .target-description {
+            font-size: 0.95rem;
+            color: #495057;
+        }
+
+        .view-button {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .activists .view-button {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .parents .view-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+        }
+
+        .changemakers .view-button {
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .view-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: #28a745;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-left: 1rem;
+        }
+
+        .project-info {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .project-info h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+        }
+
+        .project-info p {
+            color: #6c757d;
+            margin-bottom: 1rem;
+        }
+
+        .key-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+            padding: 1rem;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        @media (max-width: 768px) {
+            .pages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .title {
+                font-size: 1.5rem;
+            }
+
+            .key-features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">The Public Square</div>
+            <div class="tagline">TPSq. Landing Page Variations</div>
+            <h1 class="title">Design Review Dashboard</h1>
+            <p class="description">
+                Four targeted landing page variations designed for different FCT resident demographics.
+                Each page uses tailored messaging, psychology, and design to maximize conversion for specific audience
+                segments.
+            </p>
+        </div>
+
+        <div class="project-info">
+            <h3>🎯 Validation Strategy Overview</h3>
+            <p>Each landing page targets a different psychological profile and motivation, allowing us to test which
+                demographic shows the highest engagement and conversion rates for The Public Square platform.</p>
+
+            <div class="key-features">
+                <div class="feature">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-text">Custom color psychology for each demographic</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📝</div>
+                    <div class="feature-text">Tailored messaging and value propositions</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">Demographic-specific data collection</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚀</div>
+                    <div class="feature-text">Optimized for conversion testing</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="pages-grid">
+            <div class="page-card unconcerned">
+                <div class="page-number">1</div>
+                <h2 class="page-title">The Unconcerned <span class="status-badge">Complete</span></h2>
+                <div class="demographic">Educated Professionals Who Find Workarounds</div>
+
+                <div class="headline-preview">
+                    "Tired of complaining into the void? Make your voice count beyond your neighbor's gate."
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Target Audience</div>
+                    <div class="target-description">
+                        Affluent, educated FCT residents (25-45) who typically solve problems individually through
+                        alternative services. They avoid complaining and prefer personal solutions.
+                    </div>
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Key Psychology</div>
+                    <div class="target-description">
+                        Sophistication, efficiency, collective impact. Appeals to their desire for systemic solutions
+                        rather than personal workarounds.
+                    </div>
+                </div>
+
+                <a href="{% url 'unconcerned' %}" class="view-button">View Design</a>
+            </div>
+
+            <div class="page-card activists">
+                <div class="page-number">2</div>
+                <h2 class="page-title">The Frustrated Activists <span class="status-badge">Complete</span></h2>
+                <div class="demographic">People Who Complain But Feel Unheard</div>
+
+                <div class="headline-preview">
+                    "Tired of shouting into silence? Finally, a platform that listens and acts."
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Target Audience</div>
+                    <div class="target-description">
+                        Active complainers who engage on social media, write to authorities, or participate in community
+                        discussions but feel frustrated by lack of response.
+                    </div>
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Key Psychology</div>
+                    <div class="target-description">
+                        Urgency, empowerment, validation. Red color scheme conveys passion and action. Focuses on
+                        amplifying their existing voice.
+                    </div>
+                </div>
+
+                <a href="{% url 'frustrated_activists' %}" class="view-button">View Design</a>
+            </div>
+
+            <div class="page-card parents">
+                <div class="page-number">3</div>
+                <h2 class="page-title">The Concerned Parents <span class="status-badge">Complete</span></h2>
+                <div class="demographic">Family-Focused Safety & Community Builders</div>
+
+                <div class="headline-preview">
+                    "Your children deserve better. Build the community they'll be proud to call home."
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Target Audience</div>
+                    <div class="target-description">
+                        Parents with children in FCT who prioritize family safety, clean environment, and community
+                        welfare. Motivated by legacy and children's future.
+                    </div>
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Key Psychology</div>
+                    <div class="target-description">
+                        Protection, stability, future-building. Blue conveys trust and safety. Emphasizes family values
+                        and community building.
+                    </div>
+                </div>
+
+                <a href="{% url 'concerned_parents' %}" class="view-button">View Design</a>
+            </div>
+
+            <div class="page-card changemakers">
+                <div class="page-number">4</div>
+                <h2 class="page-title">The Hopeful Change-Makers <span class="status-badge">Complete</span></h2>
+                <div class="demographic">Young Professionals & Students</div>
+
+                <div class="headline-preview">
+                    "Your generation can fix this. Be the change FCT desperately needs."
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Target Audience</div>
+                    <div class="target-description">
+                        University students, recent graduates, young professionals (22-32) who believe in innovation and
+                        progressive change. Tech-savvy and optimistic.
+                    </div>
+                </div>
+
+                <div class="target-info">
+                    <div class="target-label">Key Psychology</div>
+                    <div class="target-description">
+                        Innovation, leadership, generational responsibility. Purple conveys creativity and progress.
+                        Appeals to their desire to lead change.
+                    </div>
+                </div>
+
+                <a href="{% url 'hopeful_changemakers' %}" class="view-button">View Design</a>
+            </div>
+        </div>
+
+        <div style="margin-top: 3rem; text-align: center; color: #6c757d; font-size: 0.9rem;">
+            <p>💡 <strong>Next Steps:</strong> Run A/B tests with these variations to identify the highest-converting
+                demographic for initial platform launch.</p>
+        </div>
+    </div>
+
+    <!-- Hidden page content for opening in new tabs -->
+    <div id="activists-page" style="display: none;">
+        <!-- Activists page content would go here -->
+        <h1>Activists page placeholder - Use the artifact browser to view the actual design</h1>
+    </div>
+
+    <div id="parents-page" style="display: none;">
+        <!-- Parents page content would go here -->
+        <h1>Parents page placeholder - Use the artifact browser to view the actual design</h1>
+    </div>
+
+    <div id="changemakers-page" style="display: none;">
+        <!-- Changemakers page content would go here -->
+        <h1>Changemakers page placeholder - Use the artifact browser to view the actual design</h1>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Public Square - Finally, Your Voice Matters</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #0f0f0f;
+            overflow-x: hidden;
+        }
+
+        .hero-section {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            overflow: hidden;
+        }
+
+        .hero-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://res.cloudinary.com/dcsdiy2sf/image/upload/v1755000891/tpsq_activist_qzbjoh.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg,
+                    rgba(231, 76, 60, 0.6) 0%,
+                    rgba(192, 57, 43, 0.5) 100%);
+            backdrop-filter: blur(1px);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            max-width: 800px;
+            padding: 0 20px;
+            color: white;
+        }
+
+        .logo {
+            margin-bottom: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.2s forwards;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo .tagline {
+            font-size: 0.9rem;
+            font-weight: 500;
+            opacity: 0.9;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hero-headline {
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.4s forwards;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-headline .highlight {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            font-weight: 400;
+            opacity: 0.95;
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2.5rem;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 10px 30px rgba(39, 174, 96, 0.4);
+            transition: all 0.3s ease;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.8s forwards;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(39, 174, 96, 0.6);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            opacity: 0.7;
+            animation: bounce 2s infinite;
+        }
+
+        .main-content {
+            background: #ffffff;
+            position: relative;
+            z-index: 5;
+        }
+
+        .form-section {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow:
+                0 20px 60px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(0, 0, 0, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #e74c3c, #27ae60, #f39c12);
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .form-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+            font-size: 0.95rem;
+        }
+
+        .required {
+            color: #e74c3c;
+        }
+
+        .form-input,
+        .form-select {
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: white;
+            font-family: inherit;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #e74c3c;
+            box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .checkbox-grid {
+            display: grid;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-option {
+            position: relative;
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .checkbox-option:hover {
+            border-color: #e74c3c;
+            background: #fdf2f2;
+            transform: translateY(-1px);
+        }
+
+        .checkbox-option.selected {
+            border-color: #e74c3c;
+            background: linear-gradient(135deg, #fdf2f2, #fbeaea);
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .checkbox-option label {
+            flex: 1;
+            cursor: pointer;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        .submit-button {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(231, 76, 60, 0.4);
+        }
+
+        .submit-button:hover::before {
+            left: 100%;
+        }
+
+        .privacy-note {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #6c757d;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-section {
+                height: 100vh;
+                padding: 0 20px;
+            }
+
+            .hero-headline {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+
+            .form-card {
+                padding: 2rem;
+                margin: 0 15px;
+            }
+
+            .form-title {
+                font-size: 1.5rem;
+            }
+
+            .checkbox-grid {
+                gap: 0.5rem;
+            }
+
+            .checkbox-option {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <section class="hero-section">
+        <div class="hero-background"></div>
+        <div class="hero-overlay"></div>
+
+        <div class="hero-content">
+            <div class="logo">
+                <h1>The Public Square</h1>
+                <div class="tagline">TPSq.</div>
+            </div>
+
+            <h1 class="hero-headline">
+                Tired of shouting into silence?<br>
+                <span class="highlight">Finally, a platform that listens</span> and acts.
+            </h1>
+
+            <p class="hero-subtitle">
+                Turn your years of complaints into the change FCT desperately needs.
+            </p>
+
+            <a href="#signup" class="cta-button">Make Your Voice Count</a>
+        </div>
+
+        <div class="scroll-indicator">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 16l-6-6h12l-6 6z" />
+            </svg>
+        </div>
+    </section>
+
+    <main class="main-content">
+        <section class="form-section" id="signup">
+            <div class="container">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2 class="form-title">Ready for real change?</h2>
+                        <p class="form-subtitle">Join the platform that turns complaints into solutions</p>
+                    </div>
+
+                    <form id="signupForm">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Full Name <span class="required">*</span></label>
+                            <input type="text" id="name" name="name" class="form-input" required
+                                placeholder="Enter your full name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address <span class="required">*</span></label>
+                            <input type="email" id="email" name="email" class="form-input" required
+                                placeholder="your@email.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="location" class="form-label">Your FCT Area <span
+                                    class="required">*</span></label>
+                            <select id="location" name="location" class="form-select" required>
+                                <option value="">Select your area</option>
+                                <option value="Garki">Garki</option>
+                                <option value="Wuse">Wuse</option>
+                                <option value="Maitama">Maitama</option>
+                                <option value="Asokoro">Asokoro</option>
+                                <option value="Kubwa">Kubwa</option>
+                                <option value="Gwarinpa">Gwarinpa</option>
+                                <option value="Lugbe">Lugbe</option>
+                                <option value="Karu">Karu</option>
+                                <option value="Nyanya">Nyanya</option>
+                                <option value="Apo">Apo</option>
+                                <option value="Jahi">Jahi</option>
+                                <option value="Other">Other FCT Area</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">What change do you want to see?</label>
+                            <div class="checkbox-grid">
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="action" name="goals" value="real_action">
+                                    <label for="action">Real action on long-standing issues</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="amplify" name="goals" value="amplify_voice">
+                                    <label for="amplify">Amplify my voice with others who care</label>
+                                </div>
+                                <div class="checkbox-option">
+                                    <input type="checkbox" id="transparency" name="goals" value="demand_transparency">
+                                    <label for="transparency">Force transparency from authorities</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="experience" class="form-label">How long have you been raising these
+                                concerns?</label>
+                            <select id="experience" name="experience" class="form-select">
+                                <option value="">Select duration</option>
+                                <option value="6months">Less than 6 months</option>
+                                <option value="1year">6 months - 1 year</option>
+                                <option value="2years">1-2 years</option>
+                                <option value="3years">2-3 years</option>
+                                <option value="5years">3-5 years</option>
+                                <option value="over5">Over 5 years</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="submit-button">
+                            Join the Fight for Change
+                        </button>
+
+                        <div class="privacy-note">
+                            🔒 Your information is secure. We'll only contact you with updates about real action
+                            happening in your area.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Enhanced form interactions
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('signupForm');
+            const checkboxOptions = document.querySelectorAll('.checkbox-option');
+            const inputs = document.querySelectorAll('.form-input, .form-select');
+
+            // Checkbox visual feedback
+            checkboxOptions.forEach(option => {
+                const checkbox = option.querySelector('input[type="checkbox"]');
+
+                option.addEventListener('click', function (e) {
+                    if (e.target.type !== 'checkbox') {
+                        checkbox.checked = !checkbox.checked;
+                    }
+                    option.classList.toggle('selected', checkbox.checked);
+                });
+
+                checkbox.addEventListener('change', function () {
+                    option.classList.toggle('selected', checkbox.checked);
+                });
+            });
+
+            // Input focus animations
+            inputs.forEach(input => {
+                input.addEventListener('focus', function () {
+                    this.parentElement.classList.add('focused');
+                });
+
+                input.addEventListener('blur', function () {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+
+            // Smooth scroll for CTA
+            document.querySelector('.cta-button').addEventListener('click', function (e) {
+                e.preventDefault();
+                document.getElementById('signup').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+
+            // Form submission
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const formData = new FormData(form);
+                const data = {};
+
+                // Collect form data
+                for (let [key, value] of formData.entries()) {
+                    if (key === 'goals') {
+                        if (!data[key]) data[key] = [];
+                        data[key].push(value);
+                    } else {
+                        data[key] = value;
+                    }
+                }
+
+                // Ensure goals array exists
+                if (!data.goals) data.goals = [];
+
+                console.log('Activist Form Data:', data);
+
+                // Show success state
+                const button = form.querySelector('.submit-button');
+                const originalText = button.textContent;
+
+                button.textContent = 'Your voice has been heard! 📢';
+                button.style.background = 'linear-gradient(135deg, #27ae60, #2ecc71)';
+
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+                    form.reset();
+
+                    // Reset checkbox states
+                    checkboxOptions.forEach(option => {
+                        option.classList.remove('selected');
+                    });
+                }, 3000);
+            });
+        });
+    </script>
+</body>
+
+</html>
