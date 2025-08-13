@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 class LandingPageView(TemplateView):
     """Serve the landing page directly from Django"""
 
-    template_name = "core/new_landing.html"
+    template_name = "core/new_landing_cisd.html"
 
 
 class UnconcernedLandingPageView(TemplateView):
