@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Public Square - FCT Civic Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        :root {
+            --primary-color: #1d4ed8;
+            --secondary-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --dark-color: #1f2937;
+            --light-bg: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+
+        /* Navigation */
+        .navbar-custom {
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            font-size: 1.25rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .sidebar, .trending-sidebar {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+
+        /* Post Composer - Fixed to not disappear */
+        .post-composer {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .post-composer:focus-within {
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary-color);
+        }
+
+        .post-textarea {
+            border: none;
+            outline: none;
+            resize: none;
+            width: 100%;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            background: transparent;
+            min-height: 60px;
+            transition: min-height 0.2s ease;
+        }
+
+        .post-textarea:focus {
+            min-height: 120px;
+        }
+
+        .post-textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .composer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            opacity: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .post-composer:focus-within .composer-actions,
+        .composer-actions.show {
+            opacity: 1;
+            max-height: 100px;
+        }
+
+        /* Post Cards */
+        .post-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .post-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.375rem 0.875rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-pending { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; }
+        .status-acknowledged { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #1e40af; }
+        .status-in-progress { background: linear-gradient(135deg, #fef3c7, #fed7aa); color: #ea580c; }
+        .status-resolved { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #065f46; }
+
+        /* Category Tags */
+        .category-tag {
+            background: linear-gradient(135deg, var(--light-bg), #e5e7eb);
+            color: var(--text-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .category-tag:hover {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            text-decoration: none;
+        }
+
+        /* Agency Assignment */
+        .agency-assignment {
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        /* Source Indicators */
+        .whatsapp-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .echo-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        /* Interaction Buttons */
+        .interaction-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .interaction-btn:hover {
+            background: var(--light-bg);
+            color: var(--text-primary);
+        }
+
+        .interaction-btn.liked { color: var(--danger-color); }
+        .interaction-btn.reposted { color: var(--success-color); }
+
+        /* Comments */
+        .comments-section {
+            border-top: 1px solid var(--border-color);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        .comment {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .comment-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--success-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            flex: 1;
+        }
+
+        .comment-input-container {
+            display: flex;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .comment-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .comment-input {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 0.75rem 3rem 0.75rem 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .comment-input:focus {
+            border-color: var(--primary-color);
+        }
+
+        .comment-submit-btn {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .comment-submit-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .comment-submit-btn:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        /* Filters */
+        .filter-pills {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-pill {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .filter-pill:hover,
+        .filter-pill.active {
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Button Styles */
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-primary-custom:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* WhatsApp Integration Section */
+        .whatsapp-integration {
+            background: linear-gradient(135deg, #25d366, #128c7e);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .whatsapp-number {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        /* Footer - FIXED */
+        .app-footer {
+            background: var(--dark-color);
+            color: #e5e7eb;
+            margin-top: 4rem;
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-section {
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: #9ca3af;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .footer-title {
+            font-weight: 600;
+            color: white;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .social-links a {
+            color: #9ca3af;
+            font-size: 1.25rem;
+            transition: all 0.2s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            background: rgba(29, 78, 216, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .footer-copyright {
+            color: #9ca3af;
+            font-size: 0.875rem;
+        }
+
+        .footer-credits {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Notification styles */
+        .notification-badge {
+            background: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            padding: 0.125rem 0.375rem;
+            font-size: 0.75rem;
+            position: absolute;
+            top: -0.25rem;
+            right: -0.25rem;
+        }
+
+        /* Error and success messages */
+        .alert-custom {
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            padding: 1rem;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .main-container { padding: 0.5rem; }
+
+            .post-card,
+            .post-composer,
+            .sidebar,
+            .trending-sidebar {
+                border-radius: 12px;
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .sidebar,
+            .trending-sidebar {
+                position: static;
+            }
+
+            .filter-pills {
+                overflow-x: auto;
+                flex-wrap: nowrap;
+                padding-bottom: 0.5rem;
+                scrollbar-width: none;
+                -ms-overflow-style: none;
+            }
+
+            .filter-pills::-webkit-scrollbar { display: none; }
+            .filter-pill { flex-shrink: 0; }
+
+            .post-avatar { width: 40px; height: 40px; font-size: 1rem; }
+            .comment-avatar { width: 32px; height: 32px; font-size: 0.8rem; }
+
+            /* Footer mobile fix */
+            .footer-section { text-align: center; }
+            .social-links { justify-content: center; }
+            .footer-bottom { text-align: center; }
+            .footer-credits { justify-content: center; }
+
+            /* Mobile bottom nav */
+            body { padding-bottom: 70px; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .post-card { animation: fadeInUp 0.3s ease-out; }
+    </style>
+</head>
+<body x-data="mainApp()">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-comments me-2"></i>The Public Square</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <div class="navbar-nav d-flex flex-column flex-lg-row align-items-start align-items-lg-center ms-auto w-100">
+                    <div class="nav-item me-lg-3 mb-2 mb-lg-0 w-100 w-lg-auto">
+                        <div class="position-relative">
+                            <input type="search" class="form-control" placeholder="Search issues..."
+                                   style="width: 100%; max-width: 300px; border-radius: 20px;"
+                                   x-model="searchQuery" @input="performSearch">
+                            <i class="fas fa-search position-absolute top-50 end-0 translate-middle-y me-3 text-muted"></i>
+                        </div>
+                    </div>
+                    <div class="nav-item me-lg-3 mb-2 mb-lg-0">
+                        <button class="btn btn-primary d-lg-none w-100 mb-2" @click="showPostModal = true">
+                            <i class="fas fa-plus me-2"></i>Report Issue
+                        </button>
+                        <button class="btn position-relative d-none d-lg-inline-block" @click="toggleNotifications()">
+                            <i class="fas fa-bell fa-lg text-muted"></i>
+                            <span class="notification-badge" x-show="unreadNotifications > 0" x-text="unreadNotifications"></span>
+                        </button>
+                    </div>
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="post-avatar me-2" style="width: 32px; height: 32px; font-size: 0.8rem;" x-text="currentUser.initials"></div>
+                            <span class="fw-medium" x-text="currentUser.name"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                            <li><a class="dropdown-item d-lg-none" href="#" @click="toggleNotifications()">
+                                <i class="fas fa-bell me-2"></i>Notifications
+                                <span class="badge bg-danger ms-2" x-show="unreadNotifications > 0" x-text="unreadNotifications"></span>
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Alert Messages -->
+    <div x-show="alertMessage" class="alert-custom alert alert-dismissible fade show" :class="alertType" x-transition>
+        <span x-text="alertMessage"></span>
+        <button type="button" class="btn-close" @click="alertMessage = ''"></button>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="row g-4">
+            <!-- Left Sidebar -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="sidebar">
+                    <!-- WhatsApp Integration -->
+                    <div class="whatsapp-integration mb-4">
+                        <i class="fab fa-whatsapp fa-2x mb-2"></i>
+                        <h6 class="fw-bold mb-2">Report via WhatsApp</h6>
+                        <p class="mb-2" style="font-size: 0.9rem;">Send your issue reports directly to WhatsApp</p>
+                        <div class="whatsapp-number">+234 800 1234 567</div>
+                        <small>Available 24/7 for all FCT residents</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Quick Actions</h6>
+                        <button class="btn-primary-custom w-100 mb-2" @click="showPostModal = true">
+                            <i class="fas fa-plus"></i>Report Issue
+                        </button>
+                        <a href="#" class="d-block text-decoration-none text-muted mb-2 p-2 rounded" style="font-size: 0.9rem;" @click="setActiveFilter('nearby')">
+                            <i class="fas fa-map-marker-alt me-2"></i>Issues Near Me
+                        </a>
+                        <a href="#" class="d-block text-decoration-none text-muted mb-2 p-2 rounded" style="font-size: 0.9rem;" @click="setActiveFilter('following')">
+                            <i class="fas fa-heart me-2"></i>My Liked Issues
+                        </a>
+                    </div>
+
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Categories</h6>
+                        <template x-for="category in categories" :key="category.slug">
+                            <a href="#" class="d-block text-decoration-none text-muted mb-1 p-2 rounded"
+                               style="font-size: 0.9rem;" @click="filterByCategory(category.slug)">
+                                <i :class="category.icon_class" class="me-2"></i>
+                                <span x-text="category.name"></span>
+                                <span x-text="'(' + category.issue_count + ')'" class="text-secondary ms-1"></span>
+                            </a>
+                        </template>
+                    </div>
+
+                    <div>
+                        <h6 class="fw-bold mb-3">My Activity</h6>
+                        <div class="small text-muted">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Issues Posted</span>
+                                <strong x-text="userStats.issues_posted || 0"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Issues Resolved</span>
+                                <strong x-text="userStats.issues_resolved || 0"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Community Impact</span>
+                                <strong><span x-text="userStats.community_impact || 0"></span> ❤️</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Feed -->
+            <div class="col-lg-6">
+                <div class="main-feed">
+                    <!-- Filter Pills -->
+                    <div class="filter-pills">
+                        <button class="filter-pill" :class="{ active: activeFilter === 'all' }" @click="setActiveFilter('all')">All Issues</button>
+                        <button class="filter-pill" :class="{ active: activeFilter === 'trending' }" @click="setActiveFilter('trending')">Trending</button>
+                        <button class="filter-pill" :class="{ active: activeFilter === 'nearby' }" @click="setActiveFilter('nearby')">Near Me</button>
+                        <button class="filter-pill" :class="{ active: activeFilter === 'resolved' }" @click="setActiveFilter('resolved')">Resolved</button>
+                        <button class="filter-pill" :class="{ active: activeFilter === 'following' }" @click="setActiveFilter('following')">Following</button>
+                    </div>
+
+                    <!-- Post Composer - FIXED -->
+                    <div class="post-composer">
+                        <div class="d-flex gap-3">
+                            <div class="post-avatar" x-text="currentUser.initials"></div>
+                            <div class="flex-fill">
+                                <textarea class="post-textarea"
+                                          placeholder="What issue would you like to report in FCT today?"
+                                          x-model="newPost.content"
+                                          @focus="showComposerActions = true"></textarea>
+                                <div class="composer-actions" :class="{ show: showComposerActions }">
+                                    <div class="d-flex gap-2 flex-fill">
+                                        <select class="form-select form-select-sm" x-model="newPost.category" style="max-width: 200px;">
+                                            <option value="">Select category</option>
+                                            <template x-for="category in categories">
+                                                <option :value="category.slug" x-text="category.name"></option>
+                                            </template>
+                                        </select>
+                                        <input type="text" class="form-control form-control-sm"
+                                               placeholder="Location" x-model="newPost.location" style="max-width: 150px;">
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-light" @click="cancelPost()">Cancel</button>
+                                        <button class="btn btn-sm btn-primary" @click="submitPost()" :disabled="isSubmitting">
+                                            <span x-show="!isSubmitting"><i class="fas fa-paper-plane me-1"></i>Post</span>
+                                            <span x-show="isSubmitting" class="spinner"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading Indicator -->
+                    <div x-show="isLoading" class="text-center py-4">
+                        <div class="spinner"></div>
+                        <div class="mt-2">Loading issues...</div>
+                    </div>
+
+                    <!-- Posts Feed -->
+                    <template x-for="post in filteredPosts" :key="post.id">
+                        <div class="post-card">
+                            <!-- Source Indicators -->
+                            <div class="whatsapp-indicator" x-show="post.source === 'whatsapp'">
+                                <i class="fab fa-whatsapp"></i>
+                                WhatsApp
+                            </div>
+                            <div class="echo-indicator" x-show="post.source === 'echo_ai'">
+                                <i class="fas fa-robot"></i>
+                                Echo AI
+                            </div>
+
+                            <!-- Post Header -->
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-3">
+                                    <div class="post-avatar" x-text="post.author.initials"></div>
+                                    <div>
+                                        <div class="fw-bold" x-text="post.author.name"></div>
+                                        <div class="text-muted small">
+                                            <i class="fas fa-map-marker-alt me-1"></i>
+                                            <span x-text="post.location"></span>
+                                            <span class="mx-2">•</span>
+                                            <span x-text="post.time_ago"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-sm" data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-h text-muted"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-flag me-2"></i>Report</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-bookmark me-2"></i>Save</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-share me-2"></i>Share</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Post Content -->
+                            <div class="post-content" x-text="post.content"></div>
+
+                            <!-- Post Images -->
+                            <template x-if="post.images && post.images.length > 0">
+                                <div class="mt-3">
+                                    <template x-for="image in post.images" :key="image.url">
+                                        <img :src="image.url" :alt="image.caption" class="w-100 mb-2" style="border-radius: 12px; max-height: 400px; object-fit: cover;">
+                                    </template>
+                                </div>
+                            </template>
+
+                            <!-- Status and Category -->
+                            <div class="d-flex justify-content-between align-items-center mb-3 mt-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <span class="category-tag" x-text="post.category"></span>
+                                    <span class="status-badge" :class="'status-' + post.status.toLowerCase().replace(' ', '-')" x-text="post.status_display"></span>
+                                </div>
+                                <div class="text-muted small">
+                                    ID: #<span x-text="post.id.substr(0, 8)"></span>
+                                </div>
+                            </div>
+
+                            <!-- Agency Assignment -->
+                            <div class="agency-assignment" x-show="post.assigned_agency">
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="fw-medium text-primary">
+                                            <i class="fas fa-building me-2"></i>
+                                            <span x-text="post.assigned_agency"></span>
+                                        </div>
+                                        <div class="small text-muted">Reviewing this issue...</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <div class="small text-muted">Assigned</div>
+                                        <div class="small fw-medium">2 hours ago</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Interaction Buttons -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex gap-1">
+                                    <button class="interaction-btn" :class="{ liked: post.user_liked }" @click="toggleLike(post)" :disabled="isSubmitting">
+                                        <i class="fas fa-heart"></i>
+                                        <span x-text="post.likes_count"></span>
+                                    </button>
+                                    <button class="interaction-btn" @click="toggleComments(post)">
+                                        <i class="fas fa-comment"></i>
+                                        <span x-text="post.comments_count"></span>
+                                    </button>
+                                    <button class="interaction-btn" :class="{ reposted: post.user_reposted }" @click="toggleRepost(post)" :disabled="isSubmitting">
+                                        <i class="fas fa-retweet"></i>
+                                        <span x-text="post.reposts_count"></span>
+                                    </button>
+                                </div>
+                                <button class="interaction-btn">
+                                    <i class="fas fa-share"></i>
+                                    Share
+                                </button>
+                            </div>
+
+                            <!-- Comments Section -->
+                            <div class="comments-section" x-show="post.showComments">
+                                <!-- Loading indicator -->
+                                <div x-show="isLoadingComments[post.id]" class="text-center py-3">
+                                    <div class="spinner"></div>
+                                    <div class="mt-2 small text-muted">Loading comments...</div>
+                                </div>
+
+                                <!-- Existing Comments -->
+                                <div x-show="!isLoadingComments[post.id]">
+                                    <!-- Show message if no comments -->
+                                    <div x-show="post.commentsLoaded && (!post.comments || post.comments.length === 0)"
+                                         class="text-center py-3 text-muted">
+                                        <i class="fas fa-comment-slash fa-2x mb-2"></i>
+                                        <div>No comments yet. Be the first to comment!</div>
+                                    </div>
+
+                                    <!-- Comments list -->
+                                    <template x-for="comment in post.comments || []" :key="comment.id">
+                                        <div class="comment">
+                                            <div class="comment-avatar" x-text="comment.author.initials"></div>
+                                            <div class="comment-content">
+                                                <div class="fw-medium" x-text="comment.author.name" style="font-size: 0.9rem;"></div>
+                                                <div class="comment-text" x-text="comment.content" style="font-size: 0.9rem; margin-top: 0.25rem;"></div>
+                                                <div class="comment-time text-muted" x-text="comment.time_ago" style="font-size: 0.75rem; margin-top: 0.25rem;"></div>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <!-- Add Comment -->
+                                <div class="comment-input-container mt-3">
+                                    <div class="post-avatar" style="width: 36px; height: 36px; font-size: 0.9rem;" x-text="currentUser.initials"></div>
+                                    <div class="comment-input-wrapper">
+                                        <input type="text" class="comment-input"
+                                               placeholder="Add a comment..."
+                                               :x-model="`commentText_${post.id}`"
+                                               @keydown.enter="submitComment(post, $event)">
+                                        <button class="comment-submit-btn" @click="submitComment(post)" :disabled="isSubmittingComment">
+                                            <span x-show="!isSubmittingComment"><i class="fas fa-paper-plane"></i></span>
+                                            <span x-show="isSubmittingComment" class="spinner" style="width: 12px; height: 12px;"></span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <!-- No Posts Message -->
+                    <div x-show="!isLoading && filteredPosts.length === 0" class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No issues found</h5>
+                        <p class="text-muted">Be the first to report an issue in your community.</p>
+                    </div>
+
+                    <!-- Load More Button -->
+                    <div x-show="hasMorePosts && !isLoading" class="text-center mt-4">
+                        <button class="btn btn-outline-primary" @click="loadMorePosts()" :disabled="isLoadingMore">
+                            <span x-show="!isLoadingMore">Load More Issues</span>
+                            <span x-show="isLoadingMore" class="d-flex align-items-center gap-2">
+                                <span class="spinner"></span>
+                                Loading...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="col-lg-3 d-none d-lg-block">
+                <div class="trending-sidebar">
+                    <!-- Trending Topics -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">Trending in FCT</h6>
+                        <template x-for="trend in trendingTopics" :key="trend.tag">
+                            <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                <div>
+                                    <a href="#" class="trending-hashtag text-decoration-none fw-medium" x-text="trend.tag"></a>
+                                    <div class="trending-count text-muted small" x-text="trend.count + ' posts'"></div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Platform Stats -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-chart-bar text-primary me-2"></i>
+                            Today's Activity
+                        </h6>
+                        <div class="small">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>New Issues</span>
+                                <strong class="text-danger" x-text="dashboardStats.today_stats?.new_issues || 0"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>In Progress</span>
+                                <strong class="text-warning" x-text="dashboardStats.today_stats?.in_progress || 0"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Resolved</span>
+                                <strong class="text-success" x-text="dashboardStats.today_stats?.resolved_today || 0"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Active Users</span>
+                                <strong class="text-info" x-text="dashboardStats.today_stats?.active_users || 0"></strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Echo AI Stats -->
+                    <div class="mb-4">
+                        <h6 class="fw-bold mb-3">
+                            <i class="fas fa-robot text-warning me-2"></i>
+                            Echo AI Activity
+                        </h6>
+                        <div class="small">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Issues Found Today</span>
+                                <strong class="text-primary" x-text="dashboardStats.echo_ai_stats?.issues_found_today || 0"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Social Mentions</span>
+                                <strong class="text-warning" x-text="dashboardStats.echo_ai_stats?.social_mentions || 0"></strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Auto-Categorized</span>
+                                <strong class="text-success" x-text="dashboardStats.echo_ai_stats?.auto_categorized_rate || 0 + '%'"></strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4 col-md-6">
+                    <div class="footer-section">
+                        <div class="footer-brand">
+                            <i class="fas fa-comments me-2"></i>The Public Square
+                        </div>
+                        <p class="footer-description">
+                            Connecting FCT citizens to government solutions through intelligent civic engagement and community-driven accountability.
+                        </p>
+                        <div class="social-links">
+                            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                            <a href="#" aria-label="Facebook"><i class="fab fa-facebook"></i></a>
+                            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 col-6">
+                    <div class="footer-section">
+                        <h6 class="footer-title">Platform</h6>
+                        <ul class="footer-links">
+                            <li><a href="#">Browse Issues</a></li>
+                            <li><a href="#">Report Issue</a></li>
+                            <li><a href="#">Trending Topics</a></li>
+                            <li><a href="#">Resolved Issues</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 col-6">
+                    <div class="footer-section">
+                        <h6 class="footer-title">Community</h6>
+                        <ul class="footer-links">
+                            <li><a href="#">Guidelines</a></li>
+                            <li><a href="#">Safety</a></li>
+                            <li><a href="#">Success Stories</a></li>
+                            <li><a href="#">Impact Report</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 col-6">
+                    <div class="footer-section">
+                        <h6 class="footer-title">Support</h6>
+                        <ul class="footer-links">
+                            <li><a href="#">Help Center</a></li>
+                            <li><a href="#">Contact Us</a></li>
+                            <li><a href="#">API Docs</a></li>
+                            <li><a href="#">Status</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 col-6">
+                    <div class="footer-section">
+                        <h6 class="footer-title">Legal</h6>
+                        <ul class="footer-links">
+                            <li><a href="#">Privacy Policy</a></li>
+                            <li><a href="#">Terms of Service</a></li>
+                            <li><a href="#">Data Protection</a></li>
+                            <li><a href="#">Cookies</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <p class="footer-copyright mb-0">
+                            © 2025 The Public Square. All rights reserved.
+                        </p>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="footer-credits">
+                            <i class="fas fa-robot text-warning"></i>
+                            <span>Powered by Echo AI • Built for FCT • Made with ❤️ in Nigeria</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="d-lg-none fixed-bottom bg-white border-top">
+        <div class="row g-0">
+            <div class="col">
+                <a href="#" class="d-flex flex-column align-items-center py-2 text-decoration-none" @click="setActiveFilter('all')">
+                    <i class="fas fa-home" :class="activeFilter === 'all' ? 'text-primary' : 'text-muted'"></i>
+                    <small :class="activeFilter === 'all' ? 'text-primary' : 'text-muted'">Feed</small>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#" class="d-flex flex-column align-items-center py-2 text-decoration-none" @click="setActiveFilter('trending')">
+                    <i class="fas fa-search" :class="activeFilter === 'trending' ? 'text-primary' : 'text-muted'"></i>
+                    <small :class="activeFilter === 'trending' ? 'text-primary' : 'text-muted'">Trending</small>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#" class="d-flex flex-column align-items-center py-2 text-decoration-none" @click="showPostModal = true">
+                    <i class="fas fa-plus-circle text-muted"></i>
+                    <small class="text-muted">Post</small>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#" class="d-flex flex-column align-items-center py-2 text-decoration-none position-relative" @click="toggleNotifications()">
+                    <i class="fas fa-bell text-muted"></i>
+                    <small class="text-muted">Alerts</small>
+                    <span class="notification-badge" x-show="unreadNotifications > 0" x-text="unreadNotifications"></span>
+                </a>
+            </div>
+            <div class="col">
+                <a href="#" class="d-flex flex-column align-items-center py-2 text-decoration-none">
+                    <i class="fas fa-user text-muted"></i>
+                    <small class="text-muted">Profile</small>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Modal -->
+    <div class="modal fade" x-show="showPostModal" style="display: none;" x-transition>
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 16px; border: none;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold">Report an Issue</h5>
+                    <button type="button" class="btn-close" @click="closePostModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form @submit.prevent="submitModalPost()">
+                        <div class="mb-3">
+                            <label class="form-label fw-medium">What's the issue?</label>
+                            <textarea class="form-control" rows="4" placeholder="Describe the issue in detail..."
+                                      style="border-radius: 12px;" x-model="modalPost.content" required></textarea>
+                        </div>
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">Category</label>
+                                <select class="form-select" style="border-radius: 12px;" x-model="modalPost.category" required>
+                                    <option value="">Select category</option>
+                                    <template x-for="category in categories">
+                                        <option :value="category.slug" x-text="category.name"></option>
+                                    </template>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-medium">Location</label>
+                                <input type="text" class="form-control" placeholder="e.g., Kubwa, Gwarinpa..."
+                                       style="border-radius: 12px;" x-model="modalPost.location" required>
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-medium">Add Photo (optional)</label>
+                            <input type="file" class="form-control" accept="image/*" style="border-radius: 12px;" @change="handleFileUpload" multiple>
+                        </div>
+                        <div class="d-flex justify-content-end gap-2 flex-column flex-sm-row">
+                            <button type="button" class="btn btn-light order-2 order-sm-1" @click="closePostModal()" style="border-radius: 20px;">Cancel</button>
+                            <button type="submit" class="btn-primary-custom order-1 order-sm-2" :disabled="isSubmitting">
+                                <span x-show="!isSubmitting"><i class="fas fa-paper-plane"></i> Post Issue</span>
+                                <span x-show="isSubmitting" class="d-flex align-items-center gap-2">
+                                    <span class="spinner"></span>
+                                    Posting...
+                                </span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function mainApp() {
+            return {
+                // State
+                activeFilter: 'all',
+                showPostModal: false,
+                showComposerActions: false,
+                showNotifications: false,
+                searchQuery: '',
+                unreadNotifications: 0,
+
+                // Loading states
+                isLoading: true,
+                isLoadingMore: false,
+                isSubmitting: false,
+                isSubmittingComment: false,
+                isLoadingComments: {},
+
+                // Data
+                posts: [],
+                categories: [],
+                trendingTopics: [],
+                dashboardStats: {},
+                userStats: {},
+                currentUser: {
+                    name: 'Loading...',
+                    initials: 'L'
+                },
+
+                // Pagination
+                currentPage: 1,
+                hasMorePosts: true,
+
+                // Forms
+                newPost: {
+                    content: '',
+                    category: '',
+                    location: ''
+                },
+
+                modalPost: {
+                    content: '',
+                    category: '',
+                    location: ''
+                },
+
+                // Alert system
+                alertMessage: '',
+                alertType: 'alert-info',
+
+                // Dynamic comment texts
+                commentTexts: {},
+
+                async init() {
+                    await this.loadInitialData();
+                    this.currentUser = {
+                        name: 'Chioma Okafor',
+                        initials: 'CO'
+                    };
+                },
+
+                async loadInitialData() {
+                    try {
+                        await Promise.all([
+                            this.loadCategories(),
+                            this.loadTrendingTopics(),
+                            this.loadDashboardStats(),
+                            this.loadIssues()
+                        ]);
+                    } catch (error) {
+                        this.showAlert('Error loading data. Please refresh the page.', 'alert-danger');
+                    }
+                },
+
+                async loadCategories() {
+                    try {
+                        const response = await fetch('/api/categories/');
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            this.categories = data.categories;
+                        }
+                    } catch (error) {
+                        console.error('Error loading categories:', error);
+                    }
+                },
+
+                async loadComments(post) {
+                    if (this.isLoadingComments[post.id]) return; // Prevent multiple simultaneous requests
+
+                    this.isLoadingComments[post.id] = true;
+
+                    try {
+                        const response = await fetch(`/api/issues/${post.id}/comments/list/`);
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            // Set comments for this post
+                            post.comments = data.comments;
+                            post.commentsLoaded = true;
+                        } else {
+                            this.showAlert('Error loading comments.', 'alert-danger');
+                        }
+                    } catch (error) {
+                        console.error('Error loading comments:', error);
+                        this.showAlert('Error loading comments. Please try again.', 'alert-danger');
+                    } finally {
+                        this.isLoadingComments[post.id] = false;
+                    }
+                },
+
+                async loadTrendingTopics() {
+                    try {
+                        const response = await fetch('/api/trending/');
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            this.trendingTopics = data.trending_topics;
+                        }
+                    } catch (error) {
+                        console.error('Error loading trending topics:', error);
+                    }
+                },
+
+                async loadDashboardStats() {
+                    try {
+                        const response = await fetch('/api/stats/');
+                        const data = await response.json();
+                        if (data.status === 'success') {
+                            this.dashboardStats = data.stats;
+                        }
+                    } catch (error) {
+                        console.error('Error loading dashboard stats:', error);
+                    }
+                },
+
+                async loadIssues(page = 1, append = false) {
+                    this.isLoading = !append;
+                    this.isLoadingMore = append;
+
+                    try {
+                        const params = new URLSearchParams({
+                            filter: this.activeFilter,
+                            page: page.toString()
+                        });
+
+                        if (this.searchQuery) {
+                            params.append('q', this.searchQuery);
+                        }
+
+                        const response = await fetch(`/api/issues/?${params}`);
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            // Initialize each post with empty comments and loading state
+                            data.issues.forEach(post => {
+                                post.comments = [];
+                                post.commentsLoaded = false;
+                                post.showComments = false;
+
+                                if (!this.commentTexts[post.id]) {
+                                    this.commentTexts[post.id] = '';
+                                }
+                            });
+
+                            if (append) {
+                                this.posts.push(...data.issues);
+                            } else {
+                                this.posts = data.issues;
+                            }
+
+                            this.currentPage = data.pagination.page;
+                            this.hasMorePosts = data.pagination.has_next;
+
+                        }
+                    } catch (error) {
+                        this.showAlert('Error loading issues. Please try again.', 'alert-danger');
+                    } finally {
+                        this.isLoading = false;
+                        this.isLoadingMore = false;
+                    }
+                },
+
+                async loadMorePosts() {
+                    await this.loadIssues(this.currentPage + 1, true);
+                },
+
+                async setActiveFilter(filter) {
+                    this.activeFilter = filter;
+                    this.currentPage = 1;
+                    this.hasMorePosts = true;
+                    await this.loadIssues();
+                },
+
+                async filterByCategory(categorySlug) {
+                    this.activeFilter = 'category';
+                    this.currentPage = 1;
+                    this.hasMorePosts = true;
+
+                    try {
+                        const params = new URLSearchParams({
+                            category: categorySlug,
+                            page: '1'
+                        });
+
+                        const response = await fetch(`/api/issues/?${params}`);
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            this.posts = data.issues;
+                            this.hasMorePosts = data.pagination.has_next;
+                        }
+                    } catch (error) {
+                        this.showAlert('Error filtering issues. Please try again.', 'alert-danger');
+                    }
+                },
+
+                async performSearch() {
+                    if (this.searchQuery.length === 0 || this.searchQuery.length >= 3) {
+                        this.currentPage = 1;
+                        this.hasMorePosts = true;
+                        await this.loadIssues();
+                    }
+                },
+
+                get filteredPosts() {
+                    return this.posts;
+                },
+
+                async submitPost() {
+                    if (!this.newPost.content || !this.newPost.category || !this.newPost.location) {
+                        this.showAlert('Please fill in all required fields.', 'alert-warning');
+                        return;
+                    }
+
+                    this.isSubmitting = true;
+
+                    try {
+                        const csrfResponse = await fetch('/api/csrf/');
+                        const csrfData = await csrfResponse.json();
+
+                        const response = await fetch('/api/issues/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfData.csrfToken
+                            },
+                            body: JSON.stringify({
+                                title: this.newPost.content.substring(0, 100) + '...',
+                                content: this.newPost.content,
+                                category: this.newPost.category,
+                                location: this.newPost.location
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            this.showAlert('Issue posted successfully!', 'alert-success');
+                            this.cancelPost();
+                            await this.loadIssues(); // Refresh issues
+                        } else {
+                            throw new Error(data.message || 'Failed to post issue');
+                        }
+                    } catch (error) {
+                        this.showAlert('Error posting issue. Please try again.', 'alert-danger');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+
+                async submitModalPost() {
+                    if (!this.modalPost.content || !this.modalPost.category || !this.modalPost.location) {
+                        this.showAlert('Please fill in all required fields.', 'alert-warning');
+                        return;
+                    }
+
+                    this.isSubmitting = true;
+
+                    try {
+                        const csrfResponse = await fetch('/api/csrf/');
+                        const csrfData = await csrfResponse.json();
+
+                        const response = await fetch('/api/issues/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfData.csrfToken
+                            },
+                            body: JSON.stringify({
+                                title: this.modalPost.content.substring(0, 100) + '...',
+                                content: this.modalPost.content,
+                                category: this.modalPost.category,
+                                location: this.modalPost.location
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            this.showAlert('Issue posted successfully!', 'alert-success');
+                            this.closePostModal();
+                            await this.loadIssues(); // Refresh issues
+                        } else {
+                            throw new Error(data.message || 'Failed to post issue');
+                        }
+                    } catch (error) {
+                        this.showAlert('Error posting issue. Please try again.', 'alert-danger');
+                    } finally {
+                        this.isSubmitting = false;
+                    }
+                },
+
+                async toggleLike(post) {
+                    if (this.isSubmitting) return;
+
+                    try {
+                        const csrfResponse = await fetch('/api/csrf/');
+                        const csrfData = await csrfResponse.json();
+
+                        const response = await fetch(`/api/issues/${post.id}/like/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': csrfData.csrfToken
+                            }
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            post.user_liked = data.user_liked;
+                            post.likes_count = data.likes_count;
+                        }
+                    } catch (error) {
+                        this.showAlert('Error updating like. Please try again.', 'alert-danger');
+                    }
+                },
+
+                async toggleRepost(post) {
+                    if (this.isSubmitting) return;
+
+                    try {
+                        const csrfResponse = await fetch('/api/csrf/');
+                        const csrfData = await csrfResponse.json();
+
+                        const response = await fetch(`/api/issues/${post.id}/repost/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfData.csrfToken
+                            },
+                            body: JSON.stringify({
+                                comment: ''
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            post.user_reposted = data.user_reposted;
+                            post.reposts_count = data.reposts_count;
+                        }
+                    } catch (error) {
+                        this.showAlert('Error updating repost. Please try again.', 'alert-danger');
+                    }
+                },
+
+                async toggleComments(post) {
+                    post.showComments = !post.showComments;
+
+                    // If showing comments and they haven't been loaded yet, load them
+                    if (post.showComments && !post.commentsLoaded) {
+                        await this.loadComments(post);
+                    }
+                },
+
+                async submitComment(post, event) {
+                    const commentText = this.commentTexts[post.id] || '';
+
+                    if (!commentText.trim()) {
+                        return;
+                    }
+
+                    this.isSubmittingComment = true;
+
+                    try {
+                        const csrfResponse = await fetch('/api/csrf/');
+                        const csrfData = await csrfResponse.json();
+
+                        const response = await fetch(`/api/issues/${post.id}/comments/`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfData.csrfToken
+                            },
+                            body: JSON.stringify({
+                                content: commentText.trim()
+                            })
+                        });
+
+                        const data = await response.json();
+
+                        if (data.status === 'success') {
+                            // Add the new comment to the post
+                            if (!post.comments) {
+                                post.comments = [];
+                            }
+                            post.comments.push(data.comment);
+                            post.comments_count = (post.comments_count || 0) + 1;
+
+                            // Clear the comment text
+                            this.commentTexts[post.id] = '';
+
+                            if (event) {
+                                event.target.value = '';
+                            }
+                        } else {
+                            throw new Error(data.message || 'Failed to post comment');
+                        }
+                    } catch (error) {
+                        this.showAlert('Error posting comment. Please try again.', 'alert-danger');
+                    } finally {
+                        this.isSubmittingComment = false;
+                    }
+                },
+
+                cancelPost() {
+                    this.newPost = { content: '', category: '', location: '' };
+                    this.showComposerActions = false;
+                },
+
+                closePostModal() {
+                    this.showPostModal = false;
+                    this.modalPost = { content: '', category: '', location: '' };
+                },
+
+                toggleNotifications() {
+                    this.showNotifications = !this.showNotifications;
+                    // In a real app, you'd load notifications here
+                },
+
+                handleFileUpload(event) {
+                    const files = event.target.files;
+                    if (files.length > 0) {
+                        console.log('Files selected:', files);
+                        // Handle file upload logic here
+                    }
+                },
+
+                showAlert(message, type = 'alert-info') {
+                    this.alertMessage = message;
+                    this.alertType = type;
+
+                    // Auto-hide after 5 seconds
+                    setTimeout(() => {
+                        this.alertMessage = '';
+                    }, 5000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

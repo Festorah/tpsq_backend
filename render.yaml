@@ -1,0 +1,18 @@
+services:
+  # Django Web Service
+  - type: web
+    name: tpsq-backend
+    env: python
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: gunicorn tpsq_backend.wsgi:application --bind 0.0.0.0:$PORT
+    postDeployCommand: python manage.py migrate --noinput
+    plan: free
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: tpsq_backend.settings
+      - key: PYTHON_VERSION
+        value: 3.11.9   # safer than 3.13 for now
+
