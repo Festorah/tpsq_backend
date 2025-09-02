@@ -37,6 +37,7 @@ from .services import (
     TrendingService,
     WhatsAppService,
 )
+from .whatsapp_conversation import WhatsAppConversationService
 
 logger = logging.getLogger(__name__)
 
@@ -410,33 +411,27 @@ def api_create_comment(request, issue_id):
 @csrf_exempt
 @require_http_methods(["GET", "POST"])
 def whatsapp_webhook(request):
-    """WhatsApp webhook endpoint"""
+    """Enhanced WhatsApp webhook with conversation flow"""
 
     if request.method == "GET":
-        # Webhook verification
+        # Webhook verification (unchanged)
         mode = request.GET.get("hub.mode")
         token = request.GET.get("hub.verify_token")
         challenge = request.GET.get("hub.challenge")
 
-        verification_result = WhatsAppService.verify_webhook(mode, token, challenge)
-
-        if verification_result:
-            return HttpResponse(verification_result)
+        if mode == "subscribe" and token == settings.WHATSAPP_VERIFY_TOKEN:
+            return HttpResponse(challenge)
         else:
             return HttpResponse("Verification failed", status=403)
 
     elif request.method == "POST":
-        # Process incoming message
         try:
             data = json.loads(request.body)
-            result = WhatsAppService.process_incoming_message(data)
-
-            logger.info(f"WhatsApp webhook result: {result}")
+            result = WhatsAppConversationService.process_incoming_message(data)
 
             return JsonResponse({"status": "success", "message": "Message processed"})
 
         except Exception as e:
-            logger.error(f"WhatsApp webhook error: {str(e)}")
             return JsonResponse(
                 {"status": "error", "message": "Error processing message"}, status=400
             )
